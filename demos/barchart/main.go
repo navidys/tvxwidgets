@@ -10,7 +10,7 @@ import (
 func main() {
 	app := tview.NewApplication()
 	barGraph := tgraph.NewBarChart()
-	barGraph.SetRect(0, 0, 50, 20)
+	barGraph.SetRect(4, 2, 50, 20)
 	barGraph.SetBorder(true)
 	barGraph.SetTitle("System Resource Usage")
 	// display system metric usage
