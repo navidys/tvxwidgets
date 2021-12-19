@@ -12,8 +12,9 @@ import (
 
 func main() {
 	app := tview.NewApplication()
+	flex := tview.NewFlex().SetDirection(tview.FlexRow)
+
 	barGraph := tgraph.NewBarChart()
-	barGraph.SetRect(0, 0, 50, 20)
 	barGraph.SetBorder(true)
 	barGraph.SetTitle("System Resource Usage")
 	// display system metric usage
@@ -22,6 +23,20 @@ func main() {
 	barGraph.AddBar("swap", 40, tcell.ColorGreen)
 	barGraph.AddBar("disk", 40, tcell.ColorOrange)
 	barGraph.SetMaxValue(100)
+
+	bar2 := tgraph.NewBarChart()
+	bar2.SetBorder(true)
+	bar2.SetTitle("System Resource Usage")
+	// display system metric usage
+	bar2.AddBar("cpu", 80, tcell.ColorBlue)
+	bar2.AddBar("mem", 20, tcell.ColorRed)
+	bar2.AddBar("swap", 40, tcell.ColorGreen)
+	bar2.AddBar("disk", 40, tcell.ColorOrange)
+	bar2.SetMaxValue(80)
+
+	flex.AddItem(barGraph, 20, 1, false)
+
+	flex.SetRect(0, 0, 50, 50)
 
 	update := func() {
 		rand.Seed(time.Now().UnixNano())
@@ -45,7 +60,7 @@ func main() {
 	}
 	go update()
 
-	if err := app.SetRoot(barGraph, false).EnableMouse(true).Run(); err != nil {
+	if err := app.SetRoot(flex, false).EnableMouse(true).Run(); err != nil {
 		panic(err)
 	}
 }

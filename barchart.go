@@ -86,7 +86,7 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 
 	mxValRune := []rune(maxValueSr)
 	for i := 0; i < len(mxValRune); i++ {
-		screen.SetContent(x+borderPadding+i, maxValY, mxValRune[i], nil, style)
+		tview.Print(screen, string(mxValRune[i]), x+borderPadding+i, maxValY, 1, 0, tcell.ColorWhite)
 	}
 
 	// draw bars
@@ -94,6 +94,9 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 	labelY := height - 1
 	valueMaxHeight := barStartY - borderPadding - 1
 	for _, item := range c.bars {
+		if startX > width {
+			return
+		}
 		// set labels
 		r := []rune(item.label)
 		for j := 0; j < len(r); j++ {
@@ -130,6 +133,11 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 func (c *BarChart) SetBorder(status bool) {
 	c.hasBorder = status
 	c.Box.SetBorder(status)
+}
+
+// SetRect sets rect for this primitive.
+func (c *BarChart) SetRect(x, y, width, height int) {
+	c.Box.SetRect(x, y, width, height)
 }
 
 // InputHandler returns input handler function for this primitive
