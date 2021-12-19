@@ -59,27 +59,38 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 	style = style.Foreground(tview.Styles.BorderColor).Background(tview.Styles.PrimitiveBackgroundColor)
 	c.Box.DrawForSubclass(screen, c)
 	x, y, width, height := c.Box.GetInnerRect()
+	maxValY := y + 1
 	xAxisStartY := height - 2
 	barStartY := height - 3
 	borderPadding := 0
 	if c.hasBorder {
 		borderPadding = 1
 	}
-	// draw graph y-axis
-	for i := borderPadding; i+y < height; i++ {
-		screen.SetContent(x+barChartYAxisLabelWidth, y+i, tview.Borders.Vertical, nil, style)
-	}
-	// draw graph x-axix
-	for i := 0; i+x < width-borderPadding; i++ {
-		screen.SetContent(x+borderPadding+i, xAxisStartY, tview.Borders.Horizontal, nil, style)
-	}
-	screen.SetContent(x+barChartYAxisLabelWidth, xAxisStartY, tview.Borders.Cross, nil, style)
-
 	// set max value if not set
 	c.initMaxValue()
+	maxValueSr := fmt.Sprintf("%d", c.maxVal)
+	maxValLenght := len(maxValueSr) + 1
+	if maxValLenght < barChartYAxisLabelWidth {
+		maxValLenght = barChartYAxisLabelWidth
+	}
+	// draw graph y-axis
+	for i := borderPadding; i+y < height; i++ {
+		screen.SetContent(x+maxValLenght, y+i, tview.Borders.Vertical, nil, style)
+	}
+	// draw graph x-axix
+	for i := maxValLenght; i+x < width-borderPadding; i++ {
+		screen.SetContent(x+i, xAxisStartY, tview.Borders.Horizontal, nil, style)
+	}
+	screen.SetContent(x+maxValLenght, xAxisStartY, tview.BoxDrawingsLightVerticalAndRight, nil, style)
+	screen.SetContent(x+maxValLenght-1, xAxisStartY, '0', nil, style)
+
+	mxValRune := []rune(maxValueSr)
+	for i := 0; i < len(mxValRune); i++ {
+		screen.SetContent(x+borderPadding+i, maxValY, mxValRune[i], nil, style)
+	}
 
 	// draw bars
-	startX := x + barChartYAxisLabelWidth + c.barGap
+	startX := x + maxValLenght + c.barGap
 	labelY := height - 1
 	valueMaxHeight := barStartY - borderPadding - 1
 	for _, item := range c.bars {
