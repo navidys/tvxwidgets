@@ -17,13 +17,17 @@ func main() {
 	barGraph.SetBorder(true)
 	barGraph.SetTitle("System Resource Usage")
 	// display system metric usage
-	barGraph.AddBar("cpu", 8, tcell.ColorBlue)
-	barGraph.AddBar("mem", 2, tcell.ColorRed)
-	barGraph.AddBar("swap", 4, tcell.ColorGreen)
-	barGraph.AddBar("disk", 4, tcell.ColorOrange)
+	barGraph.AddBar("cpu", 20, tcell.ColorBlue)
+	barGraph.AddBar("mem", 60, tcell.ColorRed)
+	barGraph.AddBar("swap", 80, tcell.ColorGreen)
+	barGraph.AddBar("disk", 100, tcell.ColorOrange)
 	barGraph.SetMaxValue(100)
 
-	barGraph.SetRect(10, 10, 50, 20)
+	flex := tview.NewFlex().SetDirection(tview.FlexColumn)
+	flex.AddItem(barGraph, 40, 0, false)
+	flex.AddItem(tview.NewBox().SetBorder(true), 40, 0, false)
+
+	flex.SetRect(0, 0, 100, 15)
 
 	update := func() {
 		rand.Seed(time.Now().UnixNano())
@@ -32,7 +36,7 @@ func main() {
 			select {
 			case <-tick.C:
 				rangeLower := 0
-				rangeUpper := 10
+				rangeUpper := 100
 				randomNum := rangeLower + rand.Intn(rangeUpper-rangeLower+1)
 				barGraph.SetBarValue("cpu", randomNum)
 				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
@@ -47,7 +51,7 @@ func main() {
 	}
 	go update()
 
-	if err := app.SetRoot(barGraph, false).EnableMouse(true).Run(); err != nil {
+	if err := app.SetRoot(flex, false).EnableMouse(true).Run(); err != nil {
 		panic(err)
 	}
 }

@@ -59,9 +59,10 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 	style = style.Foreground(tview.Styles.BorderColor).Background(tview.Styles.PrimitiveBackgroundColor)
 	c.Box.DrawForSubclass(screen, c)
 	x, y, width, height := c.Box.GetInnerRect()
+	//log.Printf("%d %d %d %d", x, y, width, height)
 	maxValY := y + 1
-	xAxisStartY := height - 2
-	barStartY := height - 3
+	xAxisStartY := y + height - 2
+	barStartY := y + height - 3
 	borderPadding := 0
 	if c.hasBorder {
 		borderPadding = 1
@@ -74,11 +75,11 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 		maxValLenght = barChartYAxisLabelWidth
 	}
 	// draw graph y-axis
-	for i := borderPadding; i+y < height; i++ {
+	for i := borderPadding; i+y < y+height-borderPadding; i++ {
 		tview.PrintJoinedSemigraphics(screen, x+maxValLenght, y+i, tview.Borders.Vertical, style)
 	}
 	// draw graph x-axix
-	for i := maxValLenght; i+x < width-borderPadding; i++ {
+	for i := maxValLenght; i+x < x+width-borderPadding; i++ {
 		tview.PrintJoinedSemigraphics(screen, x+i, xAxisStartY, tview.Borders.Horizontal, style)
 	}
 	tview.PrintJoinedSemigraphics(screen, x+maxValLenght, xAxisStartY, tview.BoxDrawingsLightVerticalAndRight, style)
@@ -91,10 +92,10 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 
 	// draw bars
 	startX := x + maxValLenght + c.barGap
-	labelY := height - 1
-	valueMaxHeight := barStartY - borderPadding - 1
+	labelY := y + height - 1
+	valueMaxHeight := barStartY - maxValY
 	for _, item := range c.bars {
-		if startX > width {
+		if startX > x+width {
 			return
 		}
 		// set labels
@@ -144,13 +145,6 @@ func (c *BarChart) SetRect(x, y, width, height int) {
 	c.Box.SetRect(x, y, width, height)
 }
 
-// InputHandler returns input handler function for this primitive
-func (c *BarChart) InputHandler() func(event *tcell.EventKey, setFocus func(p tview.Primitive)) {
-	return c.WrapInputHandler(func(event *tcell.EventKey, setFocus func(p tview.Primitive)) {
-
-	})
-}
-
 // SetMaxValue sets maximum value of bars
 func (c *BarChart) SetMaxValue(max int) {
 	c.maxVal = max
@@ -177,7 +171,7 @@ func (c *BarChart) SetBarValue(name string, value int) {
 func (c *BarChart) getHeight(maxHeight int, value int) int {
 	height := 0
 
-	if value > c.maxVal {
+	if value >= c.maxVal {
 		return maxHeight
 	}
 	height = (value * maxHeight) / c.maxVal
