@@ -25,7 +25,7 @@ func main() {
 
 	flex := tview.NewFlex().SetDirection(tview.FlexColumn)
 	flex.AddItem(barGraph, 40, 0, false)
-	flex.AddItem(tview.NewBox().SetBorder(true), 40, 0, false)
+	//flex.AddItem(tview.NewBox().SetBorder(true), 40, 0, false)
 
 	flex.SetRect(0, 0, 100, 15)
 
