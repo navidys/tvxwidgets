@@ -75,18 +75,18 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 	}
 	// draw graph y-axis
 	for i := borderPadding; i+y < height; i++ {
-		screen.SetContent(x+maxValLenght, y+i, tview.Borders.Vertical, nil, style)
+		tview.PrintJoinedSemigraphics(screen, x+maxValLenght, y+i, tview.Borders.Vertical, style)
 	}
 	// draw graph x-axix
 	for i := maxValLenght; i+x < width-borderPadding; i++ {
-		screen.SetContent(x+i, xAxisStartY, tview.Borders.Horizontal, nil, style)
+		tview.PrintJoinedSemigraphics(screen, x+i, xAxisStartY, tview.Borders.Horizontal, style)
 	}
-	screen.SetContent(x+maxValLenght, xAxisStartY, tview.BoxDrawingsLightVerticalAndRight, nil, style)
-	screen.SetContent(x+maxValLenght-1, xAxisStartY, '0', nil, style)
+	tview.PrintJoinedSemigraphics(screen, x+maxValLenght, xAxisStartY, tview.BoxDrawingsLightVerticalAndRight, style)
+	tview.PrintJoinedSemigraphics(screen, x+maxValLenght-1, xAxisStartY, '0', style)
 
 	mxValRune := []rune(maxValueSr)
 	for i := 0; i < len(mxValRune); i++ {
-		tview.Print(screen, string(mxValRune[i]), x+borderPadding+i, maxValY, 1, 0, tcell.ColorWhite)
+		tview.PrintJoinedSemigraphics(screen, x+borderPadding+i, maxValY, mxValRune[i], style)
 	}
 
 	// draw bars
@@ -100,14 +100,14 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 		// set labels
 		r := []rune(item.label)
 		for j := 0; j < len(r); j++ {
-			screen.SetContent(startX+j, labelY, r[j], nil, style)
+			tview.PrintJoinedSemigraphics(screen, startX+j, labelY, r[j], style)
 		}
 		// bar style
 		bStyle := style.Foreground(item.color)
 		barHeight := c.getHeight(valueMaxHeight, item.value)
 		for k := 0; k < barHeight; k++ {
 			for l := 0; l < c.barWidth; l++ {
-				screen.SetContent(startX+l, barStartY-k, '\u2588', nil, bStyle)
+				tview.PrintJoinedSemigraphics(screen, startX+l, barStartY-k, '\u2588', bStyle)
 			}
 
 		}
@@ -115,7 +115,7 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 		vSt := fmt.Sprintf("%d", item.value)
 		vRune := []rune(vSt)
 		for i := 0; i < len(vRune); i++ {
-			screen.SetContent(startX+i, barStartY-barHeight, vRune[i], nil, bStyle)
+			tview.PrintJoinedSemigraphics(screen, startX+i, barStartY-barHeight, vRune[i], bStyle)
 		}
 
 		// calculate next startX for next bar
@@ -133,6 +133,10 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 func (c *BarChart) SetBorder(status bool) {
 	c.hasBorder = status
 	c.Box.SetBorder(status)
+}
+
+func (c *BarChart) GetRect() (int, int, int, int) {
+	return c.Box.GetRect()
 }
 
 // SetRect sets rect for this primitive.
