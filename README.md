@@ -5,8 +5,33 @@ tvxwidgets provides extra customized primitives (widgets) for [tview](https://gi
 
 ![Screenshot](tvxwidgets.gif)
 
+## Example
 
-## widgets list
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/gdamore/tcell/v2"
+	"github.com/navidys/tvxwidgets"
+	"github.com/rivo/tview"
+)
+
+func main() {
+	app := tview.NewApplication()
+	gauge := tvxwidgets.NewActivityModeGauge()
+	gauge.SetTitle("activity mode gauge")
+	gauge.SetPgBgColor(tcell.ColorOrange)
+	gauge.SetRect(10, 4, 50, 3)
+	gauge.SetBorder(true)
+	if err := app.SetRoot(gauge, false).EnableMouse(true).Run(); err != nil {
+		panic(err)
+	}
+}
+```
+
+## Availble Widgets
 
 * bar chart
 * activity mode gauge
