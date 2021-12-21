@@ -31,7 +31,7 @@ func main() {
 }
 ```
 
-## Availble Widgets
+## Available Widgets
 
 * bar chart
 * activity mode gauge
