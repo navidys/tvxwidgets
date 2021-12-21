@@ -1,5 +1,7 @@
-# tgraph
+# tvxwidgets
 
-tgraph provides simple graph widgets (tview primitives) for [tview](https://github.com/rivo/tview)
+tvxwidgets provides extra useful primitives (widgets) for [tview](https://github.com/rivo/tview)
 
 * bar chart
+* simple gauge
+* resource utilisatrion gauge
