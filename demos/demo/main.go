@@ -6,14 +6,14 @@ import (
 	"time"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/navidys/tgraph"
+	"github.com/navidys/tvxwidgets"
 	"github.com/rivo/tview"
 )
 
 func main() {
 	app := tview.NewApplication()
 
-	barGraph := tgraph.NewBarChart()
+	barGraph := tvxwidgets.NewBarChart()
 	barGraph.SetBorder(true)
 	barGraph.SetTitle("System Resource Usage")
 	// display system metric usage

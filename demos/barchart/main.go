@@ -3,13 +3,13 @@ package main
 
 import (
 	"github.com/gdamore/tcell/v2"
-	"github.com/navidys/tgraph"
+	"github.com/navidys/tvxwidgets"
 	"github.com/rivo/tview"
 )
 
 func main() {
 	app := tview.NewApplication()
-	barGraph := tgraph.NewBarChart()
+	barGraph := tvxwidgets.NewBarChart()
 	barGraph.SetRect(4, 2, 50, 20)
 	barGraph.SetBorder(true)
 	barGraph.SetTitle("System Resource Usage")

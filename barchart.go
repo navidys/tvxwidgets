@@ -1,4 +1,4 @@
-package tgraph
+package tvxwidgets
 
 import (
 	"fmt"
@@ -136,6 +136,7 @@ func (c *BarChart) SetBorder(status bool) {
 	c.Box.SetBorder(status)
 }
 
+// GetRect return primitive current rect
 func (c *BarChart) GetRect() (int, int, int, int) {
 	return c.Box.GetRect()
 }
