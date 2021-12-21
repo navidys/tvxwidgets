@@ -48,6 +48,8 @@ func main() {
 	//screenLayout.SetRect(0, 0, 100, 15)
 
 	update := func() {
+		value := 0
+		maxValue := pmGauge.GetMaxValue()
 		rand.Seed(time.Now().UnixNano())
 		tick := time.NewTicker(500 * time.Millisecond)
 		for {
@@ -55,14 +57,13 @@ func main() {
 			case <-tick.C:
 				// update gauge
 				amGauge.Pulse()
-				pmValue := pmGauge.GetValue()
-				if pmValue > pmGauge.GetMaxValue() {
-					pmValue = 0
-					pmGauge.SetBackgroundColor(tcell.ColorOrange)
+
+				if value > maxValue {
+					value = 0
 				} else {
-					pmValue = pmValue + 1
+					value = value + 1
 				}
-				pmGauge.SetValue(pmValue)
+				pmGauge.SetValue(value)
 
 				// update bar graph
 				rangeLower := 0
