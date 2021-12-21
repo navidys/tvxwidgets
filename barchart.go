@@ -79,10 +79,10 @@ func (c *BarChart) Draw(screen tcell.Screen) {
 		tview.PrintJoinedSemigraphics(screen, x+maxValLenght, y+i, tview.Borders.Vertical, style)
 	}
 	// draw graph x-axix
-	for i := maxValLenght; i+x < x+width-borderPadding; i++ {
+	for i := maxValLenght + 1; i+x < x+width-borderPadding; i++ {
 		tview.PrintJoinedSemigraphics(screen, x+i, xAxisStartY, tview.Borders.Horizontal, style)
 	}
-	tview.PrintJoinedSemigraphics(screen, x+maxValLenght, xAxisStartY, tview.Borders.TopLeft, style)
+	tview.PrintJoinedSemigraphics(screen, x+maxValLenght, xAxisStartY, tview.BoxDrawingsLightVerticalAndRight, style)
 	tview.PrintJoinedSemigraphics(screen, x+maxValLenght-1, xAxisStartY, '0', style)
 
 	mxValRune := []rune(maxValueSr)
