@@ -93,16 +93,16 @@ func main() {
 				rangeLower := 0
 				rangeUpper := 100
 				randomNum := rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				barGraph.SetBarValue("cpu", randomNum)
+				barGraph.SetBarValue("eth0", randomNum)
 				cpuGauge.SetValue(float64(randomNum))
 				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				barGraph.SetBarValue("memory", randomNum)
+				barGraph.SetBarValue("eth1", randomNum)
 				memGauge.SetValue(float64(randomNum))
 				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				barGraph.SetBarValue("swap", randomNum)
+				barGraph.SetBarValue("eth2", randomNum)
 				swapGauge.SetValue(float64(randomNum))
 				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				barGraph.SetBarValue("disk", randomNum)
+				barGraph.SetBarValue("eth3", randomNum)
 				app.Draw()
 			}
 		}
