@@ -7,11 +7,6 @@ import (
 	"github.com/rivo/tview"
 )
 
-const (
-	// gauge cell
-	prgCell = "▉"
-)
-
 //ActivityModeGauge represents activity mode gauge permitive.
 type ActivityModeGauge struct {
 	*tview.Box
@@ -38,7 +33,7 @@ func (g *ActivityModeGauge) Draw(screen tcell.Screen) {
 	x, y, width, height := g.Box.GetInnerRect()
 	tickStr := g.tickStr(width)
 	for i := 0; i < height; i++ {
-		tview.Print(screen, tickStr, x, y+i, width, tview.AlignLeft, tcell.ColorYellow)
+		tview.Print(screen, tickStr, x, y+i, width, tview.AlignLeft, g.pgBgColor)
 	}
 }
 
