@@ -3,7 +3,7 @@
 tvxwidgets provides extra widgets for [tview](https://github.com/rivo/tview).  
 `NOTE:` The project is at its early stages and under development, feel free to contribute and report bugs.
 
-![Screenshot](tvxwidgets.gif)
+![Screenshot](demo.gif)
 
 ## Example
 
