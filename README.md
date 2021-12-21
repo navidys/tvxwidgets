@@ -31,9 +31,16 @@ func main() {
 }
 ```
 
-## Available Widgets
+## Widgets
 
 * bar chart
 * activity mode gauge
 * percentage mode gauge
 * utilisation mode gauge
+
+under development:
+
+* message dialog (information, warning, critical)
+* input diloag
+* context menu
+* ...
