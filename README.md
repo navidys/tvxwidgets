@@ -1,6 +1,6 @@
 # tvxwidgets
 
-tvxwidgets provides extra customized primitives (widgets) for [tview](https://github.com/rivo/tview).  
+tvxwidgets provides extra widgets for [tview](https://github.com/rivo/tview).  
 `NOTE:` The project is at its early stages and under development, feel free to contribute and report bugs.
 
 ![Screenshot](tvxwidgets.gif)

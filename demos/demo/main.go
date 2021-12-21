@@ -16,11 +16,11 @@ func main() {
 	// bar graph
 	barGraph := tvxwidgets.NewBarChart()
 	barGraph.SetBorder(true)
-	barGraph.SetTitle("System Resource Usage")
-	barGraph.AddBar("cpu", 20, tcell.ColorBlue)
-	barGraph.AddBar("mem", 60, tcell.ColorRed)
-	barGraph.AddBar("swap", 80, tcell.ColorGreen)
-	barGraph.AddBar("disk", 100, tcell.ColorOrange)
+	barGraph.SetTitle("bar chart")
+	barGraph.AddBar("eth0", 20, tcell.ColorBlue)
+	barGraph.AddBar("eth1", 60, tcell.ColorRed)
+	barGraph.AddBar("eth2", 80, tcell.ColorGreen)
+	barGraph.AddBar("eth3", 100, tcell.ColorOrange)
 	barGraph.SetMaxValue(100)
 
 	// activity mode gauge
