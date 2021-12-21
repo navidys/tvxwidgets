@@ -27,25 +27,49 @@ func main() {
 	amGauge := tvxwidgets.NewActivityModeGauge()
 	amGauge.SetTitle("activity mode gauge")
 	amGauge.SetPgBgColor(tcell.ColorOrange)
-	amGauge.SetRect(10, 4, 50, 3)
 	amGauge.SetBorder(true)
 
 	// percetage mode gauge
 	pmGauge := tvxwidgets.NewPercentageModeGauge()
 	pmGauge.SetTitle("percentage mode gauge")
-	pmGauge.SetRect(10, 4, 50, 3)
 	pmGauge.SetBorder(true)
 	pmGauge.SetMaxValue(50)
 
-	gaugeFlex := tview.NewFlex().SetDirection(tview.FlexRow)
-	gaugeFlex.AddItem(amGauge, 3, 0, false)
-	gaugeFlex.AddItem(pmGauge, 3, 0, false)
+	// cpu usage gauge
+	cpuGauge := tvxwidgets.NewUtilModeGauge()
+	cpuGauge.SetLabel("cpu usage:   ")
+	cpuGauge.SetLabelColor(tcell.ColorLightSkyBlue)
+	cpuGauge.SetBorder(false)
+	// memory usage gauge
+	memGauge := tvxwidgets.NewUtilModeGauge()
+	memGauge.SetLabel("memory usage:")
+	memGauge.SetLabelColor(tcell.ColorLightSkyBlue)
+	memGauge.SetBorder(false)
+	// swap usage gauge
+	swapGauge := tvxwidgets.NewUtilModeGauge()
+	swapGauge.SetLabel("swap usage:  ")
+	swapGauge.SetLabelColor(tcell.ColorLightSkyBlue)
+	swapGauge.SetBorder(false)
+
+	// utilisation flex
+	utilFlex := tview.NewFlex().SetDirection(tview.FlexRow)
+	utilFlex.AddItem(cpuGauge, 1, 0, false)
+	utilFlex.AddItem(memGauge, 1, 0, false)
+	utilFlex.AddItem(swapGauge, 1, 0, false)
+	utilFlex.SetTitle("utilisation mode gauge")
+	utilFlex.SetBorder(true)
+
+	firstCol := tview.NewFlex().SetDirection(tview.FlexRow)
+	firstCol.AddItem(barGraph, 11, 0, false)
+
+	secondCol := tview.NewFlex().SetDirection(tview.FlexRow)
+	secondCol.AddItem(amGauge, 3, 0, false)
+	secondCol.AddItem(pmGauge, 3, 0, false)
+	secondCol.AddItem(utilFlex, 5, 0, false)
 
 	screenLayout := tview.NewFlex().SetDirection(tview.FlexColumn)
-	screenLayout.AddItem(barGraph, 40, 0, false)
-	screenLayout.AddItem(gaugeFlex, 40, 0, false)
-
-	//screenLayout.SetRect(0, 0, 100, 15)
+	screenLayout.AddItem(firstCol, 40, 0, false)
+	screenLayout.AddItem(secondCol, 40, 0, false)
 
 	update := func() {
 		value := 0
@@ -70,10 +94,13 @@ func main() {
 				rangeUpper := 100
 				randomNum := rangeLower + rand.Intn(rangeUpper-rangeLower+1)
 				barGraph.SetBarValue("cpu", randomNum)
+				cpuGauge.SetValue(float64(randomNum))
 				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
 				barGraph.SetBarValue("memory", randomNum)
+				memGauge.SetValue(float64(randomNum))
 				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
 				barGraph.SetBarValue("swap", randomNum)
+				swapGauge.SetValue(float64(randomNum))
 				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
 				barGraph.SetBarValue("disk", randomNum)
 				app.Draw()
