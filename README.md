@@ -59,6 +59,6 @@ func main() {
 under development:
 
 * message dialog (information, warning, critical)
-* input diloag
+* input dialog
 * context menu
 * ...
