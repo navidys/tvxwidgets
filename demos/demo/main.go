@@ -51,6 +51,15 @@ func main() {
 	swapGauge.SetLabelColor(tcell.ColorLightSkyBlue)
 	swapGauge.SetBorder(false)
 
+	// dialogs
+	errDialog := tvxwidgets.NewMessageDialog(tvxwidgets.ErrorDailog)
+	errDialog.SetTitle("error dialog")
+	errDialog.SetMessage("This is a sample tvxwidgets error dialog")
+
+	msgDialog := tvxwidgets.NewMessageDialog(tvxwidgets.InfoDialog)
+	msgDialog.SetTitle("message dialog")
+	msgDialog.SetMessage("[navy::]IMPORTANT MESSAGE[-::]\nThis is a sample tvxwidgets message dialog")
+
 	// utilisation flex
 	utilFlex := tview.NewFlex().SetDirection(tview.FlexRow)
 	utilFlex.AddItem(cpuGauge, 1, 0, false)
@@ -61,15 +70,17 @@ func main() {
 
 	firstCol := tview.NewFlex().SetDirection(tview.FlexRow)
 	firstCol.AddItem(barGraph, 11, 0, false)
+	firstCol.AddItem(msgDialog, 12, 0, true)
 
 	secondCol := tview.NewFlex().SetDirection(tview.FlexRow)
 	secondCol.AddItem(amGauge, 3, 0, false)
 	secondCol.AddItem(pmGauge, 3, 0, false)
 	secondCol.AddItem(utilFlex, 5, 0, false)
+	secondCol.AddItem(errDialog, 12, 0, false)
 
 	screenLayout := tview.NewFlex().SetDirection(tview.FlexColumn)
-	screenLayout.AddItem(firstCol, 40, 0, false)
-	screenLayout.AddItem(secondCol, 40, 0, false)
+	screenLayout.AddItem(firstCol, 50, 0, false)
+	screenLayout.AddItem(secondCol, 50, 0, false)
 
 	update := func() {
 		value := 0

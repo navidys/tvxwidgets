@@ -55,10 +55,10 @@ func main() {
 * activity mode gauge
 * percentage mode gauge
 * utilisation mode gauge
+* message dialog (info and error)
 
 under development:
 
-* message dialog (information, warning, critical)
-* input dialog
 * context menu
+* stack view
 * ...
