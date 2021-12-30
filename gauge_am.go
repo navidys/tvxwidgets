@@ -71,6 +71,11 @@ func (g *ActivityModeGauge) Pulse() {
 	g.counter = g.counter + 1
 }
 
+// Reset resets the gauge counter (set to 0)
+func (g *ActivityModeGauge) Reset() {
+	g.counter = 0
+}
+
 func (g *ActivityModeGauge) tickStr(max int) string {
 	if g.counter >= max-4 {
 		g.counter = 0

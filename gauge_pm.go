@@ -115,6 +115,11 @@ func (g *PercentageModeGauge) GetMaxValue() int {
 	return g.maxValue
 }
 
+// Reset resets the gauge counter (set to 0)
+func (g *PercentageModeGauge) Reset() {
+	g.value = 0
+}
+
 func (g *PercentageModeGauge) progressBlock(max int) int {
 	pc := g.value * 100 / g.maxValue
 	value := int(pc * (max) / 100)
