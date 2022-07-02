@@ -1,8 +1,13 @@
 run:
   deadline: 5m
+  skip-dirs:
+    - demos
 linters:
   enable-all: true
   disable:
+    - exhaustruct
+    - varnamelen
+    # deprecated
     - golint
     - maligned
     - interfacer
