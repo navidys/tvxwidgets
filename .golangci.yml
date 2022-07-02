@@ -1,0 +1,16 @@
+run:
+  deadline: 5m
+linters:
+  enable-all: true
+  disable:
+    - golint
+    - maligned
+    - interfacer
+    - scopelint
+    - exhaustivestruct
+linters-settings:
+  errcheck:
+    check-blank: false
+    ignore: fmt:.*
+  nolintlint:
+    require-specific: true
