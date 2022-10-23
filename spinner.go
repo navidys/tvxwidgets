@@ -5,7 +5,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-// Spinner represents a spinner widget
+// Spinner represents a spinner widget.
 type Spinner struct {
 	*tview.Box
 
@@ -81,6 +81,7 @@ func (s *Spinner) Reset() {
 // SetStyle sets the spinner style.
 func (s *Spinner) SetStyle(style SpinnerStyle) *Spinner {
 	s.currentStyle = style
+
 	return s
 }
 
@@ -97,5 +98,6 @@ func (s *Spinner) getCurrentFrame() string {
 func (s *Spinner) SetCustomStyle(frames []rune) *Spinner {
 	s.styles[spinnerCustom] = frames
 	s.currentStyle = spinnerCustom
+
 	return s
 }
