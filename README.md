@@ -5,9 +5,19 @@
 [![Go Report](https://img.shields.io/badge/go%20report-A%2B-brightgreen.svg)](https://goreportcard.com/report/github.com/navidys/tvxwidgets)
 
 tvxwidgets provides extra widgets for [tview](https://github.com/rivo/tview).
-`NOTE:` The project is at its early stages and under development, feel free to contribute and report bugs.
 
 ![Screenshot](demo.gif)
+
+## Widgets
+
+* [bar chart](./demos/barchart/)
+* [activity mode gauge](./demos/gauge_am/)
+* [percentage mode gauge](./demos/gauge_pm/)
+* [utilisation mode gauge](./demos/gauge_um/)
+* [message dialog (info and error)](./demos/dialog/)
+* [spinner](./demos/spinner/)
+* [plot (linechart, scatter)](./demos/plot/)
+
 
 ## Example
 
@@ -48,12 +58,3 @@ func main() {
 }
 
 ```
-
-## Widgets
-
-* bar chart
-* activity mode gauge
-* percentage mode gauge
-* utilisation mode gauge
-* message dialog (info and error)
-* spinner

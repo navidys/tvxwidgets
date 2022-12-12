@@ -4,6 +4,14 @@ import (
 	"strings"
 
 	"github.com/gdamore/tcell/v2"
+	"github.com/rivo/tview"
+)
+
+type drawLineMode int
+
+const (
+	horizontalLine drawLineMode = iota
+	verticalLine
 )
 
 const (
@@ -22,8 +30,17 @@ const (
 	// dialog padding.
 	dialogPadding = 2
 	// empty space parts.
-	emptySpaceParts = 2
+	emptySpaceParts   = 2
+	brailleOffsetRune = '\u2800'
+	dotRune           = '\u25CF'
 )
+
+var brailleRune = [4][2]rune{ // nolint:gochecknoglobals
+	{'\u0001', '\u0008'},
+	{'\u0002', '\u0010'},
+	{'\u0004', '\u0020'},
+	{'\u0040', '\u0080'},
+}
 
 // getColorName returns convert tcell color to its name.
 func getColorName(color tcell.Color) string {
@@ -46,4 +63,43 @@ func getMessageWidth(message string) int {
 	}
 
 	return messageWidth
+}
+
+// returns max values in 2D float64 slices.
+func getMaxFloat64From2dSlice(slices [][]float64) float64 {
+	if len(slices) == 0 {
+		return 0
+	}
+
+	var max float64
+
+	for _, slice := range slices {
+		for _, val := range slice {
+			if val > max {
+				max = val
+			}
+		}
+	}
+
+	return max
+}
+
+func absInt(x int) int {
+	if x >= 0 {
+		return x
+	}
+
+	return -x
+}
+
+func drawLine(screen tcell.Screen, x int, y int, length int, mode drawLineMode, style tcell.Style) {
+	if mode == horizontalLine {
+		for i := 0; i < length; i++ {
+			tview.PrintJoinedSemigraphics(screen, x+i, y, tview.BoxDrawingsLightTripleDashHorizontal, style)
+		}
+	} else if mode == verticalLine {
+		for i := 0; i < length; i++ {
+			tview.PrintJoinedSemigraphics(screen, x, y+i, tview.BoxDrawingsLightTripleDashVertical, style)
+		}
+	}
 }
