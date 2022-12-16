@@ -35,12 +35,16 @@ const (
 	dotRune           = '\u25CF'
 )
 
-var brailleRune = [4][2]rune{ // nolint:gochecknoglobals
-	{'\u0001', '\u0008'},
-	{'\u0002', '\u0010'},
-	{'\u0004', '\u0020'},
-	{'\u0040', '\u0080'},
-}
+var (
+	brailleRune = [4][2]rune{ // nolint:gochecknoglobals
+		{'\u0001', '\u0008'},
+		{'\u0002', '\u0010'},
+		{'\u0004', '\u0020'},
+		{'\u0040', '\u0080'},
+	}
+
+	barsRune = [...]rune{' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'} // nolint:gochecknoglobals
+)
 
 // getColorName returns convert tcell color to its name.
 func getColorName(color tcell.Color) string {
@@ -78,6 +82,23 @@ func getMaxFloat64From2dSlice(slices [][]float64) float64 {
 			if val > max {
 				max = val
 			}
+		}
+	}
+
+	return max
+}
+
+// returns max values in float64 slices.
+func getMaxFloat64FromSlice(slice []float64) float64 {
+	if len(slice) == 0 {
+		return 0
+	}
+
+	var max float64
+
+	for _, val := range slice {
+		if val > max {
+			max = val
 		}
 	}
 
