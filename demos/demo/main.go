@@ -39,20 +39,14 @@ func main() {
 	}
 
 	spinnerRow := tview.NewFlex().SetDirection(tview.FlexColumn)
-	spinnerRow.SetBorder(true).SetTitle("Spinners")
+	spinnerRow.SetBorder(true).SetTitle("spinners")
 
 	for _, spinner := range spinners {
 		spinnerRow.AddItem(spinner, 0, 1, false)
 	}
 
 	// bar graph
-	barGraph := tvxwidgets.NewBarChart()
-	barGraph.SetBorder(true)
-	barGraph.SetTitle("bar chart")
-	barGraph.AddBar("eth0", 20, tcell.ColorBlue)
-	barGraph.AddBar("eth1", 60, tcell.ColorRed)
-	barGraph.AddBar("eth2", 80, tcell.ColorGreen)
-	barGraph.AddBar("eth3", 100, tcell.ColorOrange)
+	barGraph := newBarChart()
 	barGraph.SetMaxValue(100)
 
 	// activity mode gauge
@@ -91,6 +85,7 @@ func main() {
 	utilFlex.SetTitle("utilisation mode gauge")
 	utilFlex.SetBorder(true)
 
+	// plot (line charts)
 	sinData := func() [][]float64 {
 		n := 220
 		data := make([][]float64, 2)
@@ -103,26 +98,10 @@ func main() {
 		return data
 	}()
 
-	bmLineChart := tvxwidgets.NewPlot()
-	bmLineChart.SetBorder(true)
-	bmLineChart.SetTitle("line chart (braille mode)")
-	bmLineChart.SetLineColor([]tcell.Color{
-		tcell.ColorSteelBlue,
-		tcell.ColorGreen,
-	})
-	bmLineChart.SetMarker(tvxwidgets.PlotMarkerBraille)
+	bmLineChart := newBrailleModeLineChart()
 	bmLineChart.SetData(sinData)
 
-	dmLineChart := tvxwidgets.NewPlot()
-	dmLineChart.SetBorder(true)
-	dmLineChart.SetTitle("line chart (dot mode)")
-	dmLineChart.SetLineColor([]tcell.Color{
-		tcell.ColorDarkOrange,
-	})
-	dmLineChart.SetAxesLabelColor(tcell.ColorGold)
-	dmLineChart.SetAxesColor(tcell.ColorGold)
-	dmLineChart.SetMarker(tvxwidgets.PlotMarkerDot)
-	dmLineChart.SetDotMarkerRune('\u25c9')
+	dmLineChart := newDotModeLineChart()
 
 	sampleData1 := []float64{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	sampleData2 := []float64{10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
@@ -135,24 +114,91 @@ func main() {
 
 	dmLineChart.SetData(dotChartData)
 
-	firstCol := tview.NewFlex().SetDirection(tview.FlexRow)
-	firstCol.AddItem(barGraph, 11, 0, false)
-	firstCol.AddItem(bmLineChart, 15, 0, false)
-	firstCol.AddItem(spinnerRow, 3, 0, false)
+	// sparkline
+	iowaitSparkline := tvxwidgets.NewSparkline()
+	iowaitSparkline.SetBorder(false)
+	iowaitSparkline.SetDataTitle("Disk IO (iowait)")
+	iowaitSparkline.SetDataTitleColor(tcell.ColorDarkOrange)
+	iowaitSparkline.SetLineColor(tcell.ColorMediumPurple)
 
-	secondCol := tview.NewFlex().SetDirection(tview.FlexRow)
-	secondCol.AddItem(amGauge, 3, 0, false)
-	secondCol.AddItem(pmGauge, 3, 0, false)
-	secondCol.AddItem(utilFlex, 5, 0, false)
-	secondCol.AddItem(dmLineChart, 15, 0, false)
+	systemSparkline := tvxwidgets.NewSparkline()
+	systemSparkline.SetBorder(false)
+	systemSparkline.SetDataTitle("Disk IO (system)")
+	systemSparkline.SetDataTitleColor(tcell.ColorDarkOrange)
+	systemSparkline.SetLineColor(tcell.ColorSteelBlue)
 
-	screenLayout := tview.NewFlex().SetDirection(tview.FlexColumn)
-	screenLayout.AddItem(firstCol, 50, 0, false)
-	screenLayout.AddItem(secondCol, 50, 0, false)
+	iowaitData := []float64{4, 2, 1, 6, 3, 9, 1, 4, 2, 15, 14, 9, 8, 6, 10, 13, 15, 12, 10, 5, 3, 6, 1, 7, 10, 10, 14, 13, 6}
+	systemData := []float64{0, 0, 1, 2, 9, 5, 3, 1, 2, 0, 6, 3, 2, 2, 6, 8, 5, 2, 1, 5, 8, 6, 1, 4, 1, 1, 4, 3, 6}
 
+	ioSparkLineData := func() []float64 {
+		for i := 0; i < 5; i++ {
+			iowaitData = append(iowaitData, iowaitData...)
+		}
+
+		return iowaitData
+	}()
+
+	systemSparklineData := func() []float64 {
+		for i := 0; i < 5; i++ {
+			systemData = append(systemData, systemData...)
+		}
+
+		return systemData
+	}()
+
+	iowaitSparkline.SetData(ioSparkLineData)
+	systemSparkline.SetData(systemSparklineData)
+
+	sparklineGroupLayout := tview.NewFlex().SetDirection(tview.FlexColumn)
+	sparklineGroupLayout.SetBorder(true)
+	sparklineGroupLayout.SetTitle("sparkline")
+	sparklineGroupLayout.AddItem(iowaitSparkline, 0, 1, false)
+	sparklineGroupLayout.AddItem(tview.NewBox(), 1, 0, false)
+	sparklineGroupLayout.AddItem(systemSparkline, 0, 1, false)
+
+	// first row layout
+	firstRowfirstCol := tview.NewFlex().SetDirection(tview.FlexRow)
+	firstRowfirstCol.AddItem(barGraph, 0, 1, false)
+
+	firstRowSecondCol := tview.NewFlex().SetDirection(tview.FlexRow)
+	firstRowSecondCol.AddItem(amGauge, 0, 3, false)
+	firstRowSecondCol.AddItem(pmGauge, 0, 3, false)
+	firstRowSecondCol.AddItem(utilFlex, 0, 5, false)
+
+	firstRow := tview.NewFlex().SetDirection(tview.FlexColumn)
+	firstRow.AddItem(firstRowfirstCol, 0, 1, false)
+	firstRow.AddItem(firstRowSecondCol, 0, 1, false)
+
+	// second row
+	plotRowLayout := tview.NewFlex().SetDirection(tview.FlexColumn)
+	plotRowLayout.AddItem(bmLineChart, 0, 1, false)
+	plotRowLayout.AddItem(dmLineChart, 0, 1, false)
+
+	screenLayout := tview.NewFlex().SetDirection(tview.FlexRow)
+	screenLayout.AddItem(firstRow, 11, 0, false)
+	screenLayout.AddItem(plotRowLayout, 15, 0, false)
+	screenLayout.AddItem(sparklineGroupLayout, 6, 0, false)
+	screenLayout.AddItem(spinnerRow, 3, 0, false)
+
+	screenLayout.SetRect(0, 0, 100, 40)
+
+	// upgrade datat functions
 	moveDotChartData := func() {
 		newData := append(dotChartData[0], dotChartData[0][0])
 		dotChartData[0] = newData[1:]
+	}
+
+	moveDiskIOData := func() ([]float64, []float64) {
+
+		newIOWaitData := ioSparkLineData[1:]
+		newIOWaitData = append(newIOWaitData, ioSparkLineData[0])
+		ioSparkLineData = newIOWaitData
+
+		newSystemData := systemSparklineData[1:]
+		newSystemData = append(newSystemData, systemSparklineData[0])
+		systemSparklineData = newSystemData
+
+		return newIOWaitData, newSystemData
 	}
 
 	moveSinData := func(data [][]float64) [][]float64 {
@@ -184,12 +230,12 @@ func main() {
 				}
 				// update gauge
 				amGauge.Pulse()
-
 				app.Draw()
 			}
 		}
 	}
 
+	// update screen ticker
 	update := func() {
 		value := 0
 		maxValue := pmGauge.GetMaxValue()
@@ -228,6 +274,10 @@ func main() {
 				moveDotChartData()
 				dmLineChart.SetData(dotChartData)
 
+				d1, d2 := moveDiskIOData()
+				iowaitSparkline.SetData(d1)
+				systemSparkline.SetData(d2)
+
 				app.Draw()
 			}
 		}
@@ -239,4 +289,44 @@ func main() {
 	if err := app.SetRoot(screenLayout, false).EnableMouse(true).Run(); err != nil {
 		panic(err)
 	}
+}
+
+func newDotModeLineChart() *tvxwidgets.Plot {
+	dmLineChart := tvxwidgets.NewPlot()
+	dmLineChart.SetBorder(true)
+	dmLineChart.SetTitle("line chart (dot mode)")
+	dmLineChart.SetLineColor([]tcell.Color{
+		tcell.ColorDarkOrange,
+	})
+	dmLineChart.SetAxesLabelColor(tcell.ColorGold)
+	dmLineChart.SetAxesColor(tcell.ColorGold)
+	dmLineChart.SetMarker(tvxwidgets.PlotMarkerDot)
+	dmLineChart.SetDotMarkerRune('\u25c9')
+
+	return dmLineChart
+}
+
+func newBrailleModeLineChart() *tvxwidgets.Plot {
+	bmLineChart := tvxwidgets.NewPlot()
+	bmLineChart.SetBorder(true)
+	bmLineChart.SetTitle("line chart (braille mode)")
+	bmLineChart.SetLineColor([]tcell.Color{
+		tcell.ColorSteelBlue,
+		tcell.ColorGreen,
+	})
+	bmLineChart.SetMarker(tvxwidgets.PlotMarkerBraille)
+
+	return bmLineChart
+}
+
+func newBarChart() *tvxwidgets.BarChart {
+	barGraph := tvxwidgets.NewBarChart()
+	barGraph.SetBorder(true)
+	barGraph.SetTitle("bar chart")
+	barGraph.AddBar("eth0", 20, tcell.ColorBlue)
+	barGraph.AddBar("eth1", 60, tcell.ColorRed)
+	barGraph.AddBar("eth2", 80, tcell.ColorGreen)
+	barGraph.AddBar("eth3", 100, tcell.ColorOrange)
+
+	return barGraph
 }

@@ -4,7 +4,7 @@
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/navidys/tvxwidgets)](https://pkg.go.dev/github.com/navidys/tvxwidgets)
 [![Go Report](https://img.shields.io/badge/go%20report-A%2B-brightgreen.svg)](https://goreportcard.com/report/github.com/navidys/tvxwidgets)
 
-tvxwidgets provides extra widgets for [tview](https://github.com/rivo/tview).
+tvxwidgets provides extra widgets for [tview](https://github.com/rivo/tview).  
 
 ![Screenshot](demo.gif)
 
@@ -17,6 +17,7 @@ tvxwidgets provides extra widgets for [tview](https://github.com/rivo/tview).
 * [message dialog (info and error)](./demos/dialog/)
 * [spinner](./demos/spinner/)
 * [plot (linechart, scatter)](./demos/plot/)
+* [sparkline](./demos/sparkline/)
 
 
 ## Example
