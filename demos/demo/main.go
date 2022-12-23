@@ -252,20 +252,18 @@ func main() {
 				}
 				pmGauge.SetValue(value)
 
-				// update bar graph
-				rangeLower := 0
-				rangeUpper := 100
-				randomNum := rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				barGraph.SetBarValue("eth0", randomNum)
-				cpuGauge.SetValue(float64(randomNum))
-				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				barGraph.SetBarValue("eth1", randomNum)
-				memGauge.SetValue(float64(randomNum))
-				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				barGraph.SetBarValue("eth2", randomNum)
-				swapGauge.SetValue(float64(randomNum))
-				randomNum = rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				barGraph.SetBarValue("eth3", randomNum)
+				randNum1 := float64(rand.Float64() * 100)
+				randNum2 := float64(rand.Float64() * 100)
+				randNum3 := float64(rand.Float64() * 100)
+				randNum4 := float64(rand.Float64() * 100)
+
+				barGraph.SetBarValue("eth0", int(randNum1))
+				cpuGauge.SetValue(randNum1)
+				barGraph.SetBarValue("eth1", int(randNum2))
+				memGauge.SetValue(randNum2)
+				barGraph.SetBarValue("eth2", int(randNum3))
+				swapGauge.SetValue(randNum3)
+				barGraph.SetBarValue("eth3", int(randNum4))
 
 				// move line charts
 				sinData = moveSinData(sinData)

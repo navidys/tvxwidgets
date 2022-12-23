@@ -25,10 +25,8 @@ func main() {
 		for {
 			select {
 			case <-tick.C:
-				rangeLower := 0
-				rangeUpper := 100
-				randomNum := rangeLower + rand.Intn(rangeUpper-rangeLower+1)
-				gauge.SetValue(float64(randomNum))
+				randNum := float64(rand.Float64() * 100)
+				gauge.SetValue(randNum)
 				app.Draw()
 			}
 		}
