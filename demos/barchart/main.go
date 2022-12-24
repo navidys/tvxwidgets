@@ -19,6 +19,8 @@ func main() {
 	barGraph.AddBar("swap", 40, tcell.ColorGreen)
 	barGraph.AddBar("disk", 40, tcell.ColorOrange)
 	barGraph.SetMaxValue(100)
+	barGraph.SetAxesColor(tcell.ColorAntiqueWhite)
+	barGraph.SetAxesLabelColor(tcell.ColorAntiqueWhite)
 
 	if err := app.SetRoot(barGraph, false).EnableMouse(true).Run(); err != nil {
 		panic(err)

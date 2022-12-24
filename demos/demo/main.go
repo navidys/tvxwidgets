@@ -48,6 +48,8 @@ func main() {
 	// bar graph
 	barGraph := newBarChart()
 	barGraph.SetMaxValue(100)
+	barGraph.SetAxesColor(tcell.ColorAntiqueWhite)
+	barGraph.SetAxesLabelColor(tcell.ColorAntiqueWhite)
 
 	// activity mode gauge
 	amGauge := tvxwidgets.NewActivityModeGauge()

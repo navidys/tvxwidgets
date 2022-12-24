@@ -165,7 +165,7 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 
 	axesStyle := tcell.StyleDefault.Background(plot.GetBackgroundColor()).Foreground(plot.axesColor)
 
-	// draw Y axis lin
+	// draw Y axis line
 	drawLine(screen,
 		x+plotYAxisLabelsWidth,
 		y,
