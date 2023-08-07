@@ -157,5 +157,5 @@ func (g *UtilModeGauge) getBarColor(percentage float64) tcell.Color {
 func (g *UtilModeGauge) SetEmptyColor (color tcell.Color) {
 	g.emptyColor = color
 
-	// Signed-off-by: Sumon Sutrodhar <sumon.cse14@gmail.com>
+	// Signed-off-by: Sumon Sutrodhar <stdr-sumon@users.noreply.github.com>
 }
