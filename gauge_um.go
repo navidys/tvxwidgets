@@ -89,11 +89,6 @@ func (g *UtilModeGauge) SetValue(value float64) {
 	}
 }
 
-// SetEmptyColor sets empty gauge color.
-func (g *UtilModeGauge) SetEmptyColor (color tcell.Color) {
-	g.emptyColor = color
-}
-
 // GetValue returns current gauge value.
 func (g *UtilModeGauge) GetValue() float64 {
 	return g.pc
@@ -156,4 +151,9 @@ func (g *UtilModeGauge) getBarColor(percentage float64) tcell.Color {
 	}
 
 	return g.critColor
+}
+
+// SetEmptyColor sets empty gauge color.
+func (g *UtilModeGauge) SetEmptyColor (color tcell.Color) {
+	g.emptyColor = color
 }
