@@ -18,8 +18,10 @@ func main() {
 		data[0] = make([]float64, n)
 		data[1] = make([]float64, n)
 		for i := 0; i < n; i++ {
-			data[0][i] = 1 + math.Sin(float64(i)/5)
-			data[1][i] = 1 + math.Cos(float64(i)/5)
+			data[0][i] = 1 + math.Sin(float64(i+1)/5)
+			// Avoid taking Cos(0) because it creates a high point of 2 that
+			// will never be hit again and makes the graph look a little funny
+			data[1][i] = 1 + math.Cos(float64(i+1)/5)
 		}
 		return data
 	}()
