@@ -35,6 +35,7 @@ validate: gofmt lint govet pre-commit codespell ## Validate prometheus-podman-ex
 .PHONY: lint
 lint: ## Run golangci-lint
 	@echo "running golangci-lint"
+	GO111MODULE=off
 	$(BIN)/golangci-lint run
 
 .PHONY: pre-commit

@@ -84,6 +84,16 @@ func (d *MessageDialog) SetTitle(title string) {
 	d.layout.SetTitle(title)
 }
 
+// SetTitleColor sets title color.
+func (g *MessageDialog) SetTitleColor(color tcell.Color) {
+	g.layout.SetTitleColor(color)
+}
+
+// SetTitleAlign sets title alignment.
+func (g *MessageDialog) SetTitleAlign(align int) {
+	g.Box.SetTitleAlign(align)
+}
+
 // SetBackgroundColor sets dialog background color.
 func (d *MessageDialog) SetBackgroundColor(color tcell.Color) {
 	d.bgColor = color
