@@ -23,7 +23,7 @@ install.tools: .install.pre-commit .install.codespell .install.golangci-lint ## 
 
 .PHONY: .install.golangci-lint
 .install.golangci-lint:
-	VERSION=1.46.2 ./hack/install_golangci.sh
+	VERSION=1.51.1 ./hack/install_golangci.sh
 
 #=================================================
 # Linting/Formatting/Code Validation targets
@@ -35,7 +35,6 @@ validate: gofmt lint govet pre-commit codespell ## Validate prometheus-podman-ex
 .PHONY: lint
 lint: ## Run golangci-lint
 	@echo "running golangci-lint"
-	GO111MODULE=off
 	$(BIN)/golangci-lint run
 
 .PHONY: pre-commit
