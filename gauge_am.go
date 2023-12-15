@@ -44,6 +44,16 @@ func (g *ActivityModeGauge) SetTitle(title string) {
 	g.Box.SetTitle(title)
 }
 
+// SetTitleAlign sets title alignment.
+func (g *ActivityModeGauge) SetTitleAlign(align int) {
+	g.Box.SetTitleAlign(align)
+}
+
+// SetTitleColor sets title color.
+func (g *ActivityModeGauge) SetTitleColor(color tcell.Color) {
+	g.Box.SetTitleColor(color)
+}
+
 // Focus is called when this primitive receives focus.
 func (g *ActivityModeGauge) Focus(delegate func(p tview.Primitive)) {
 }

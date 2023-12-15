@@ -53,6 +53,16 @@ func (g *UtilModeGauge) SetTitle(title string) {
 	g.Box.SetTitle(title)
 }
 
+// SetTitleColor sets title color.
+func (g *UtilModeGauge) SetTitleColor(color tcell.Color) {
+	g.Box.SetTitleColor(color)
+}
+
+// SetTitleAlign sets title alignment.
+func (g *UtilModeGauge) SetTitleAlign(align int) {
+	g.Box.SetTitleAlign(align)
+}
+
 // SetLabel sets label for this primitive.
 func (g *UtilModeGauge) SetLabel(label string) {
 	g.label = label
