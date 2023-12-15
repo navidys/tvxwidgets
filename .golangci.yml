@@ -5,9 +5,14 @@ run:
 linters:
   enable-all: true
   disable:
-    - exhaustruct
     - varnamelen
+    - exhaustruct
     # deprecated
+    - structcheck
+    - deadcode
+    - varcheck
+    - nosnakecase
+    - ifshort
     - golint
     - maligned
     - interfacer

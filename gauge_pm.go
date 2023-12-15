@@ -69,21 +69,6 @@ func (g *PercentageModeGauge) Draw(screen tcell.Screen) {
 	}
 }
 
-// SetTitle sets title for this primitive.
-func (g *PercentageModeGauge) SetTitle(title string) {
-	g.Box.SetTitle(title)
-}
-
-// SetTitleColor sets title color.
-func (g *PercentageModeGauge) SetTitleColor(color tcell.Color) {
-	g.Box.SetTitleColor(color)
-}
-
-// SetTitleAlign sets title alignment.
-func (g *PercentageModeGauge) SetTitleAlign(align int) {
-	g.Box.SetTitleAlign(align)
-}
-
 // Focus is called when this primitive receives focus.
 func (g *PercentageModeGauge) Focus(delegate func(p tview.Primitive)) {
 }

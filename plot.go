@@ -219,13 +219,13 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 		tview.Print(screen,
 			label,
 			x,
-			y+height-(i*(plotYAxisLabelsGap+1))-2, // nolint:gomnd
+			y+height-(i*(plotYAxisLabelsGap+1))-2, //nolint:gomnd
 			plotYAxisLabelsWidth,
 			tview.AlignLeft, plot.axesLabelColor)
 	}
 }
 
-// nolint:gocognit,cyclop
+//nolint:gocognit,cyclop
 func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 	x, y, width, height := plot.getChartAreaRect()
 	chartData := plot.getData()
@@ -290,12 +290,12 @@ func (plot *Plot) calcBrailleLines() {
 
 			plot.setBrailleLine(
 				image.Pt(
-					(x+(j*plotHorizontalScale))*2, // nolint:gomnd
-					(y+height-previousHeight-1)*4, // nolint:gomnd
+					(x+(j*plotHorizontalScale))*2, //nolint:gomnd
+					(y+height-previousHeight-1)*4, //nolint:gomnd
 				),
 				image.Pt(
-					(x+((j+1)*plotHorizontalScale))*2, // nolint:gomnd
-					(y+height-lheight-1)*4,            // nolint:gomnd
+					(x+((j+1)*plotHorizontalScale))*2, //nolint:gomnd
+					(y+height-lheight-1)*4,            //nolint:gomnd
 				),
 				plot.lineColors[i],
 			)
@@ -306,7 +306,7 @@ func (plot *Plot) calcBrailleLines() {
 }
 
 func (plot *Plot) setBraillePoint(p image.Point, color tcell.Color) {
-	point := image.Pt(p.X/2, p.Y/4) // nolint:gomnd
+	point := image.Pt(p.X/2, p.Y/4) //nolint:gomnd
 	plot.brailleCellMap[point] = brailleCell{
 		plot.brailleCellMap[point].cRune | brailleRune[p.Y%4][p.X%2],
 		color,
