@@ -76,10 +76,20 @@ func getMaxFloat64From2dSlice(slices [][]float64) float64 {
 		return 0
 	}
 
-	var max float64
+	var (
+		max       float64
+		maxIsInit bool
+	)
 
 	for _, slice := range slices {
 		for _, val := range slice {
+			if !maxIsInit {
+				maxIsInit = true
+				max = val
+
+				continue
+			}
+
 			if val > max {
 				max = val
 			}
@@ -95,11 +105,10 @@ func getMaxFloat64FromSlice(slice []float64) float64 {
 		return 0
 	}
 
-	var max float64
-
-	for _, val := range slice {
-		if val > max {
-			max = val
+	max := slice[0]
+	for i := 1; i < len(slice); i++ {
+		if slice[i] > max {
+			max = slice[i]
 		}
 	}
 
