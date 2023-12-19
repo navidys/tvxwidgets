@@ -32,7 +32,7 @@ jobs:
       - uses: codespell-project/actions-codespell@master
         with:
           check_filenames: true
-          skip: ./.git,./vendor,*_test.go,go.sum,go.mod
+          skip: ./.git,./vendor,*_test.go,go.sum,go.mod,*_test.go
 
   golangci-lint:
     runs-on: ubuntu-latest
