@@ -6,14 +6,46 @@ on:
 jobs:
   golangci-lint:
     runs-on: ubuntu-latest
-    container:
-      image: fedora:latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '>=1.19.0'
-      - uses: actions/checkout@v4
-      - run: |
-          dnf -y install make
-          make .install.golangci-lint
-          make lint
+          # cannot use 1.21.X latest version since golangci-lint has an issue.
+          go-version: '1.21.4'
+          cache: false
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.51
+
+  unit_test:
+    name: Unit test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '>=1.19.0'
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        export GOBIN=$(pwd)/bin/
+        make .install.ginkgo
+
+    - name: Generate coverage report
+      run: |
+        export GOBIN=$(pwd)/bin/
+        make test-unit
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        file: .coverage/coverprofile
+        name: codecov-umbrella
+        fail_ci_if_error: true
