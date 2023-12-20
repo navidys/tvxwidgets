@@ -63,4 +63,42 @@ var _ = Describe("Spinner", Ordered, func() {
 			Expect(heigth).To(Equal(50))
 		})
 	})
+
+	Describe("Style", func() {
+		It("checks style", func() {
+			spinner.SetStyle(tvxwidgets.SpinnerGrowHorizontal)
+			spinner.Reset()
+			app.Draw()
+
+			prune, _, _, _ := screen.GetContent(0, 1)
+			Expect(prune).To(Equal('▉'))
+
+			spinner.Pulse()
+			app.Draw()
+			prune, _, _, _ = screen.GetContent(0, 1)
+			Expect(prune).To(Equal('▊'))
+		})
+	})
+
+	Describe("CustomStyle", func() {
+		It("checks custom style", func() {
+			customStyle := []rune{'\u2705', '\u274C'}
+			spinner.SetCustomStyle(customStyle)
+			spinner.Reset()
+
+			app.Draw()
+			prune, _, _, _ := screen.GetContent(0, 1)
+			Expect(prune).To(Equal(customStyle[0]))
+
+			spinner.Pulse()
+			app.Draw()
+			prune, _, _, _ = screen.GetContent(0, 1)
+			Expect(prune).To(Equal(customStyle[1]))
+
+			spinner.Pulse()
+			app.Draw()
+			prune, _, _, _ = screen.GetContent(0, 1)
+			Expect(prune).To(Equal(customStyle[0]))
+		})
+	})
 })
