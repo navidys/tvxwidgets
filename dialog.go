@@ -70,7 +70,7 @@ func NewMessageDialog(dtype int) *MessageDialog {
 
 // SetType sets dialog type to info or error.
 func (d *MessageDialog) SetType(dtype int) {
-	if dtype >= 0 && dtype <= 2 {
+	if dtype >= 0 && dtype <= 1 {
 		d.messageType = dtype
 		d.setColor()
 	}
@@ -165,6 +165,11 @@ func (d *MessageDialog) SetDoneFunc(handler func()) *MessageDialog {
 	return d
 }
 
+// GetBackgroundColor returns dialog background color.
+func (d *MessageDialog) GetBackgroundColor() tcell.Color {
+	return d.bgColor
+}
+
 func (d *MessageDialog) setColor() {
 	var bgColor tcell.Color
 
@@ -178,6 +183,8 @@ func (d *MessageDialog) setColor() {
 	d.form.SetBackgroundColor(bgColor)
 	d.textview.SetBackgroundColor(bgColor)
 	d.layout.SetBackgroundColor(bgColor)
+
+	d.bgColor = bgColor
 }
 
 func (d *MessageDialog) setRect() {

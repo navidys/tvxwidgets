@@ -89,7 +89,7 @@ govet:   ## Run govet
 .PHONY: codespell
 codespell: ## Run codespell
 	@echo "running codespell"
-	@codespell -S ./vendor,go.mod,go.sum,./.git
+	@codespell -S ./vendor,go.mod,go.sum,./.git,*_test.go
 
 #=================================================
 # Help menu
