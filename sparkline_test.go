@@ -63,4 +63,30 @@ var _ = Describe("Sparkline", Ordered, func() {
 			Expect(heigth).To(Equal(50))
 		})
 	})
+
+	Describe("DataTitle and Color", func() {
+		It("checks data title text and color", func() {
+			tests := []struct {
+				title string
+				color tcell.Color
+			}{
+				{title: "test01", color: tcell.ColorDarkOrange},
+				{title: "abc123", color: tcell.ColorBlue},
+			}
+
+			for _, test := range tests {
+				sparkline.SetDataTitle(test.title)
+				sparkline.SetDataTitleColor(test.color)
+				app.Draw()
+
+				for x := 0; x < len(test.title); x++ {
+					prune, _, style, _ := screen.GetContent(x, 1)
+					fg, _, _ := style.Decompose()
+
+					Expect(fg).To(Equal(test.color))
+					Expect(string(prune)).To(Equal(string(test.title[x])))
+				}
+			}
+		})
+	})
 })
