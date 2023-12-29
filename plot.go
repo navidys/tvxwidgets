@@ -50,6 +50,8 @@ type Plot struct {
 	axesColor      tcell.Color
 	axesLabelColor tcell.Color
 	drawAxes       bool
+	drawXAxisLabel bool
+	drawYAxisLabel bool
 	brailleCellMap map[image.Point]brailleCell
 	mu             sync.Mutex
 }
@@ -64,6 +66,8 @@ func NewPlot() *Plot {
 		axesColor:      tcell.ColorDimGray,
 		axesLabelColor: tcell.ColorDimGray,
 		drawAxes:       true,
+		drawXAxisLabel: true,
+		drawYAxisLabel: true,
 		lineColors: []tcell.Color{
 			tcell.ColorSteelBlue,
 		},
@@ -107,6 +111,16 @@ func (plot *Plot) SetAxesLabelColor(color tcell.Color) {
 // SetDrawAxes set true in order to draw axes to screen.
 func (plot *Plot) SetDrawAxes(draw bool) {
 	plot.drawAxes = draw
+}
+
+// SetDrawXAxisLabel set true in order to draw x axis label to screen.
+func (plot *Plot) SetDrawXAxisLabel(draw bool) {
+	plot.drawXAxisLabel = draw
+}
+
+// SetDrawYAxisLabel set true in order to draw y axis label to screen.
+func (plot *Plot) SetDrawYAxisLabel(draw bool) {
+	plot.drawYAxisLabel = draw
 }
 
 // SetMarker sets marker type braille or dot mode.
@@ -192,7 +206,18 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 		y+height-plotXAxisLabelsHeight-1,
 		tview.BoxDrawingsLightUpAndRight, axesStyle)
 
-	// draw x axis labels
+	if plot.drawXAxisLabel {
+		plot.drawXAxisLabelToScreen(screen, plotYAxisLabelsWidth, x, y, width, height)
+	}
+
+	if plot.drawYAxisLabel {
+		plot.drawYAxisLabelToScreen(screen, plotYAxisLabelsWidth, x, y, height)
+	}
+}
+
+func (plot *Plot) drawXAxisLabelToScreen(
+	screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int,
+) {
 	tview.Print(screen, "0",
 		x+plotYAxisLabelsWidth,
 		y+height-plotXAxisLabelsHeight,
@@ -210,8 +235,9 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 
 		labelX += (len(label) + plotXAxisLabelsGap) * plotHorizontalScale
 	}
+}
 
-	// draw Y axis labels
+func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
 	verticalScale := plot.maxVal / float64(height-plotXAxisLabelsHeight-1)
 
 	for i := 0; i*(plotYAxisLabelsGap+1) < height-1; i++ {

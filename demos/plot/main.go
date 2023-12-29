@@ -35,6 +35,7 @@ func main() {
 	})
 	bmLineChart.SetMarker(tvxwidgets.PlotMarkerBraille)
 	bmLineChart.SetData(sinData)
+	bmLineChart.SetDrawXAxisLabel(false)
 
 	dmLineChart := tvxwidgets.NewPlot()
 	dmLineChart.SetBorder(true)
@@ -72,6 +73,7 @@ func main() {
 	dmScatterPlot.SetPlotType(tvxwidgets.PlotTypeScatter)
 	dmScatterPlot.SetMarker(tvxwidgets.PlotMarkerDot)
 	dmScatterPlot.SetData(scatterPlotData)
+	dmScatterPlot.SetDrawYAxisLabel(false)
 
 	bmScatterPlot := tvxwidgets.NewPlot()
 	bmScatterPlot.SetBorder(true)
