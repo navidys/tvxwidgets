@@ -215,7 +215,9 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 	}
 }
 
-func (plot *Plot) drawXAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int) {
+func (plot *Plot) drawXAxisLabelToScreen(
+	screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int,
+) {
 	tview.Print(screen, "0",
 		x+plotYAxisLabelsWidth,
 		y+height-plotXAxisLabelsHeight,
