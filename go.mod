@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/gdamore/tcell/v2 v2.7.0
 	github.com/onsi/ginkgo/v2 v2.15.0
-	github.com/onsi/gomega v1.31.0
+	github.com/onsi/gomega v1.31.1
 	github.com/rivo/tview v0.0.0-20231206124440-5f078138442e
 )
 
