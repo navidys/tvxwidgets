@@ -1,7 +1,7 @@
 package tvxwidgets
 
 import (
-	"fmt"
+	"strconv"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -76,7 +76,7 @@ func (c *BarChart) Draw(screen tcell.Screen) { //nolint:funlen,cyclop
 	}
 	// set max value if not set
 	c.initMaxValue()
-	maxValueSr := fmt.Sprintf("%d", c.maxVal)
+	maxValueSr := strconv.Itoa(c.maxVal)
 	maxValLenght := len(maxValueSr) + 1
 
 	if maxValLenght < barChartYAxisLabelWidth {
@@ -136,7 +136,7 @@ func (c *BarChart) Draw(screen tcell.Screen) { //nolint:funlen,cyclop
 			}
 		}
 		// bar value
-		vSt := fmt.Sprintf("%d", item.value)
+		vSt := strconv.Itoa(item.value)
 		vRune := []rune(vSt)
 
 		for i := 0; i < len(vRune); i++ {

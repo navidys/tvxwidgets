@@ -59,7 +59,7 @@ func (g *UtilModeGauge) SetLabelColor(color tcell.Color) {
 }
 
 // Focus is called when this primitive receives focus.
-func (g *UtilModeGauge) Focus(delegate func(p tview.Primitive)) {
+func (g *UtilModeGauge) Focus(delegate func(p tview.Primitive)) { //nolint:revive
 }
 
 // HasFocus returns whether or not this primitive has focus.

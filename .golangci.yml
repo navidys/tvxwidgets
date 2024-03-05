@@ -9,6 +9,7 @@ linters:
   disable:
     - varnamelen
     - exhaustruct
+    - depguard
     # deprecated
     - rowserrcheck
     - wastedassign
