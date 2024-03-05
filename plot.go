@@ -3,6 +3,7 @@ package tvxwidgets
 import (
 	"fmt"
 	"image"
+	"strconv"
 	"sync"
 
 	"github.com/gdamore/tcell/v2"
@@ -226,10 +227,7 @@ func (plot *Plot) drawXAxisLabelToScreen(
 
 	for labelX := x + plotYAxisLabelsWidth +
 		(plotXAxisLabelsGap)*plotHorizontalScale + 1; labelX < x+width-1; {
-		label := fmt.Sprintf(
-			"%d",
-			(labelX-(x+plotYAxisLabelsWidth)-1)/(plotHorizontalScale)+1,
-		)
+		label := strconv.Itoa((labelX-(x+plotYAxisLabelsWidth)-1)/(plotHorizontalScale) + 1)
 
 		tview.Print(screen, label, labelX, y+height-plotXAxisLabelsHeight, width, tview.AlignLeft, plot.axesLabelColor)
 
@@ -251,7 +249,7 @@ func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWid
 	}
 }
 
-//nolint:gocognit,cyclop
+//nolint:cyclop
 func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 	x, y, width, height := plot.getChartAreaRect()
 	chartData := plot.getData()

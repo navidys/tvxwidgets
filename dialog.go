@@ -133,6 +133,7 @@ func (d *MessageDialog) InputHandler() func(event *tcell.EventKey, setFocus func
 				return
 			}
 		}
+
 		if formHandler := d.form.InputHandler(); formHandler != nil {
 			formHandler(event, setFocus)
 
@@ -148,6 +149,7 @@ func (d *MessageDialog) MouseHandler() func(action tview.MouseAction, event *tce
 		consumed, capture = d.form.MouseHandler()(action, event, setFocus)
 		if !consumed && action == tview.MouseLeftClick && d.InRect(event.Position()) {
 			setFocus(d)
+
 			consumed = true
 		}
 

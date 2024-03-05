@@ -35,6 +35,7 @@ func (sl *Sparkline) Draw(screen tcell.Screen) {
 	// print label
 	if sl.dataTitle != "" {
 		tview.Print(screen, sl.dataTitle, x, y, width, tview.AlignLeft, sl.dataTitlecolor)
+
 		barHeight--
 	}
 
