@@ -154,7 +154,8 @@ func (plot *Plot) getYAxisLabelsWidth() int {
 	return len(fmt.Sprintf("%.2f", plot.maxVal))
 }
 
-func (plot *Plot) getChartAreaRect() (int, int, int, int) {
+// GetPlotRect returns the rect for the inner part of the plot, ie not including axes.
+func (plot *Plot) GetPlotRect() (int, int, int, int) {
 	x, y, width, height := plot.Box.GetInnerRect()
 	plotYAxisLabelsWidth := plot.getYAxisLabelsWidth()
 
@@ -251,7 +252,7 @@ func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWid
 
 //nolint:cyclop
 func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
-	x, y, width, height := plot.getChartAreaRect()
+	x, y, width, height := plot.GetPlotRect()
 	chartData := plot.getData()
 
 	switch plot.ptype {
@@ -285,7 +286,7 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 }
 
 func (plot *Plot) drawBrailleMarkerToScreen(screen tcell.Screen) {
-	x, y, width, height := plot.getChartAreaRect()
+	x, y, width, height := plot.GetPlotRect()
 
 	plot.calcBrailleLines()
 
@@ -299,7 +300,7 @@ func (plot *Plot) drawBrailleMarkerToScreen(screen tcell.Screen) {
 }
 
 func (plot *Plot) calcBrailleLines() {
-	x, y, _, height := plot.getChartAreaRect()
+	x, y, _, height := plot.GetPlotRect()
 	chartData := plot.getData()
 
 	for i, line := range chartData {
