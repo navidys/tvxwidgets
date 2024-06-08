@@ -78,7 +78,7 @@ jobs:
       with:
         file: .coverage/coverprofile
         name: codecov-umbrella
-        fail_ci_if_error: true
+        fail_ci_if_error: false
 
   goreportcard:
     name: update reportcard
