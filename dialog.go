@@ -76,6 +76,11 @@ func (d *MessageDialog) SetType(dtype int) {
 	}
 }
 
+// SetTitle sets dialog title.
+func (d *MessageDialog) SetTitle(title string) {
+	d.layout.SetTitle(title)
+}
+
 // SetBackgroundColor sets dialog background color.
 func (d *MessageDialog) SetBackgroundColor(color tcell.Color) {
 	d.bgColor = color
