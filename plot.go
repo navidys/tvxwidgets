@@ -245,6 +245,7 @@ func (plot *Plot) drawXAxisLabelToScreen(
 
 func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
 	verticalScale := plot.maxVal / float64(height-plotXAxisLabelsHeight-1)
+	previousLabel := ""
 
 	for i := 0; i*(plotYAxisLabelsGap+1) < height-1; i++ {
 		var label string
@@ -253,6 +254,14 @@ func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWid
 		} else {
 			label = fmt.Sprintf("%d", int(float64(i)*verticalScale*(plotYAxisLabelsGap+1)))
 		}
+
+		// Prevent same label beign shown twice
+		// Mainly relevant for integer labels with small data sets (in value)
+		if label == previousLabel {
+			continue
+		}
+		previousLabel = label
+
 		tview.Print(screen,
 			label,
 			x,
