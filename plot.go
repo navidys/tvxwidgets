@@ -255,7 +255,7 @@ func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWid
 			label = fmt.Sprintf("%d", int(float64(i)*verticalScale*(plotYAxisLabelsGap+1)))
 		}
 
-		// Prevent same label beign shown twice
+		// Prevent same label being shown twice
 		// Mainly relevant for integer labels with small data sets (in value)
 		if label == previousLabel {
 			continue
