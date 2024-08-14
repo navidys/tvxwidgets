@@ -195,12 +195,15 @@ func (c *BarChart) AddBar(label string, value int, color tcell.Color) {
 
 // RemoveBar removes a bar item from the bar chart
 func (c *BarChart) RemoveBar(label string) {
-	for i, barItem := range c.bars {
-		if barItem.label == label {
-			c.bars = append(c.bars[:i], c.bars[i+1:]...)
-			return
+	bars := c.bars[:0]
+
+	for _, barItem := range c.bars {
+		if barItem.label != label {
+			bars = append(bars, barItem)
 		}
 	}
+
+	c.bars = bars
 }
 
 // SetBarValue sets bar values.
