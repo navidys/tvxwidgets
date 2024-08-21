@@ -193,7 +193,7 @@ func (c *BarChart) AddBar(label string, value int, color tcell.Color) {
 	})
 }
 
-// RemoveBar removes a bar item from the bar chart
+// RemoveBar removes a bar item from the bar chart.
 func (c *BarChart) RemoveBar(label string) {
 	bars := c.bars[:0]
 
