@@ -42,33 +42,35 @@ type brailleCell struct {
 // Plot represents a plot primitive used for different charts.
 type Plot struct {
 	*tview.Box
-	data           [][]float64
-	maxVal         float64
-	marker         Marker
-	ptype          PlotType
-	dotMarkerRune  rune
-	lineColors     []tcell.Color
-	axesColor      tcell.Color
-	axesLabelColor tcell.Color
-	drawAxes       bool
-	drawXAxisLabel bool
-	drawYAxisLabel bool
-	brailleCellMap map[image.Point]brailleCell
-	mu             sync.Mutex
+	data                [][]float64
+	maxVal              float64
+	marker              Marker
+	ptype               PlotType
+	dotMarkerRune       rune
+	lineColors          []tcell.Color
+	axesColor           tcell.Color
+	axesLabelColor      tcell.Color
+	drawAxes            bool
+	drawXAxisLabel      bool
+	drawYAxisLabel      bool
+	drawYAxisLabelFloat bool
+	brailleCellMap      map[image.Point]brailleCell
+	mu                  sync.Mutex
 }
 
 // NewPlot returns a plot widget.
 func NewPlot() *Plot {
 	return &Plot{
-		Box:            tview.NewBox(),
-		marker:         PlotMarkerDot,
-		ptype:          PlotTypeLineChart,
-		dotMarkerRune:  dotRune,
-		axesColor:      tcell.ColorDimGray,
-		axesLabelColor: tcell.ColorDimGray,
-		drawAxes:       true,
-		drawXAxisLabel: true,
-		drawYAxisLabel: true,
+		Box:                 tview.NewBox(),
+		marker:              PlotMarkerDot,
+		ptype:               PlotTypeLineChart,
+		dotMarkerRune:       dotRune,
+		axesColor:           tcell.ColorDimGray,
+		axesLabelColor:      tcell.ColorDimGray,
+		drawAxes:            true,
+		drawXAxisLabel:      true,
+		drawYAxisLabel:      true,
+		drawYAxisLabelFloat: true,
 		lineColors: []tcell.Color{
 			tcell.ColorSteelBlue,
 		},
@@ -122,6 +124,11 @@ func (plot *Plot) SetDrawXAxisLabel(draw bool) {
 // SetDrawYAxisLabel set true in order to draw y axis label to screen.
 func (plot *Plot) SetDrawYAxisLabel(draw bool) {
 	plot.drawYAxisLabel = draw
+}
+
+// SetDrawYAxisLabelFloat set true in order to draw the y axis label as a float.
+func (plot *Plot) SetDrawYAxisLabelFloat(float bool) {
+	plot.drawYAxisLabelFloat = float
 }
 
 // SetMarker sets marker type braille or dot mode.
@@ -238,9 +245,24 @@ func (plot *Plot) drawXAxisLabelToScreen(
 
 func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
 	verticalScale := plot.maxVal / float64(height-plotXAxisLabelsHeight-1)
+	previousLabel := ""
 
 	for i := 0; i*(plotYAxisLabelsGap+1) < height-1; i++ {
-		label := fmt.Sprintf("%.2f", float64(i)*verticalScale*(plotYAxisLabelsGap+1))
+		var label string
+		if plot.drawYAxisLabelFloat {
+			label = fmt.Sprintf("%.2f", float64(i)*verticalScale*(plotYAxisLabelsGap+1))
+		} else {
+			label = strconv.Itoa(int(float64(i) * verticalScale * (plotYAxisLabelsGap + 1)))
+		}
+
+		// Prevent same label being shown twice
+		// Mainly relevant for integer labels with small data sets (in value)
+		if label == previousLabel {
+			continue
+		}
+
+		previousLabel = label
+
 		tview.Print(screen,
 			label,
 			x,
