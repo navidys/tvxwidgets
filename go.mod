@@ -4,7 +4,7 @@ go 1.21.0
 
 require (
 	github.com/gdamore/tcell/v2 v2.7.4
-	github.com/onsi/ginkgo/v2 v2.20.0
+	github.com/onsi/ginkgo/v2 v2.20.1
 	github.com/onsi/gomega v1.34.1
 	github.com/rivo/tview v0.0.0-20240616192244-23476fa0bab2
 )
