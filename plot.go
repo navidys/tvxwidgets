@@ -19,6 +19,14 @@ const (
 	PlotMarkerDot
 )
 
+// PlotYAxisLabelDataType represents plot y axis type (integer or float).
+type PlotYAxisLabelDataType uint
+
+const (
+	PlotYAxisLabelDataInt PlotYAxisLabelDataType = iota
+	PlotYAxisLabelDataFloat
+)
+
 // PlotType represents plot type (line chart or scatter).
 type PlotType uint
 
@@ -42,33 +50,35 @@ type brailleCell struct {
 // Plot represents a plot primitive used for different charts.
 type Plot struct {
 	*tview.Box
-	data           [][]float64
-	maxVal         float64
-	marker         Marker
-	ptype          PlotType
-	dotMarkerRune  rune
-	lineColors     []tcell.Color
-	axesColor      tcell.Color
-	axesLabelColor tcell.Color
-	drawAxes       bool
-	drawXAxisLabel bool
-	drawYAxisLabel bool
-	brailleCellMap map[image.Point]brailleCell
-	mu             sync.Mutex
+	data               [][]float64
+	maxVal             float64
+	marker             Marker
+	ptype              PlotType
+	dotMarkerRune      rune
+	lineColors         []tcell.Color
+	axesColor          tcell.Color
+	axesLabelColor     tcell.Color
+	drawAxes           bool
+	drawXAxisLabel     bool
+	drawYAxisLabel     bool
+	yAxisLabelDataType PlotYAxisLabelDataType
+	brailleCellMap     map[image.Point]brailleCell
+	mu                 sync.Mutex
 }
 
 // NewPlot returns a plot widget.
 func NewPlot() *Plot {
 	return &Plot{
-		Box:            tview.NewBox(),
-		marker:         PlotMarkerDot,
-		ptype:          PlotTypeLineChart,
-		dotMarkerRune:  dotRune,
-		axesColor:      tcell.ColorDimGray,
-		axesLabelColor: tcell.ColorDimGray,
-		drawAxes:       true,
-		drawXAxisLabel: true,
-		drawYAxisLabel: true,
+		Box:                tview.NewBox(),
+		marker:             PlotMarkerDot,
+		ptype:              PlotTypeLineChart,
+		dotMarkerRune:      dotRune,
+		axesColor:          tcell.ColorDimGray,
+		axesLabelColor:     tcell.ColorDimGray,
+		drawAxes:           true,
+		drawXAxisLabel:     true,
+		drawYAxisLabel:     true,
+		yAxisLabelDataType: PlotYAxisLabelDataFloat,
 		lineColors: []tcell.Color{
 			tcell.ColorSteelBlue,
 		},
@@ -97,6 +107,11 @@ func (plot *Plot) SetRect(x, y, width, height int) {
 // SetLineColor sets chart line color.
 func (plot *Plot) SetLineColor(color []tcell.Color) {
 	plot.lineColors = color
+}
+
+// SetYAxisLabelDataType sets Y axis label data type (integer or float).
+func (plot *Plot) SetYAxisLabelDataType(dataType PlotYAxisLabelDataType) {
+	plot.yAxisLabelDataType = dataType
 }
 
 // SetAxesColor sets axes x and y lines color.
@@ -238,9 +253,24 @@ func (plot *Plot) drawXAxisLabelToScreen(
 
 func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
 	verticalScale := plot.maxVal / float64(height-plotXAxisLabelsHeight-1)
+	previousLabel := ""
 
 	for i := 0; i*(plotYAxisLabelsGap+1) < height-1; i++ {
-		label := fmt.Sprintf("%.2f", float64(i)*verticalScale*(plotYAxisLabelsGap+1))
+		var label string
+		if plot.yAxisLabelDataType == PlotYAxisLabelDataFloat {
+			label = fmt.Sprintf("%.2f", float64(i)*verticalScale*(plotYAxisLabelsGap+1))
+		} else {
+			label = strconv.Itoa(int(float64(i) * verticalScale * (plotYAxisLabelsGap + 1)))
+		}
+
+		// Prevent same label being shown twice.
+		// Mainly relevant for integer labels with small data sets (in value)
+		if label == previousLabel {
+			continue
+		}
+
+		previousLabel = label
+
 		tview.Print(screen,
 			label,
 			x,
