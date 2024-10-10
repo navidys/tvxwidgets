@@ -1,6 +1,7 @@
 package tvxwidgets
 
 import (
+	"math"
 	"strings"
 
 	"github.com/gdamore/tcell/v2"
@@ -83,6 +84,10 @@ func getMaxFloat64From2dSlice(slices [][]float64) float64 {
 
 	for _, slice := range slices {
 		for _, val := range slice {
+			if math.IsNaN(val) {
+				continue
+			}
+
 			if !maxIsInit {
 				maxIsInit = true
 				max = val
