@@ -3,6 +3,7 @@ package tvxwidgets
 import (
 	"fmt"
 	"image"
+	"math"
 	"strconv"
 	"sync"
 
@@ -292,6 +293,10 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 
 			for j := 0; j < len(line) && j*plotHorizontalScale < width; j++ {
 				val := line[j]
+				if math.IsNaN(val) {
+					continue
+				}
+
 				lheight := int((val / plot.maxVal) * float64(height-1))
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
@@ -305,6 +310,10 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 			style := tcell.StyleDefault.Background(plot.GetBackgroundColor()).Foreground(plot.lineColors[i])
 
 			for j, val := range line {
+				if math.IsNaN(val) {
+					continue
+				}
+
 				lheight := int((val / plot.maxVal) * float64(height-1))
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
@@ -341,6 +350,10 @@ func (plot *Plot) calcBrailleLines() {
 		previousHeight := int((line[0] / plot.maxVal) * float64(height-1))
 
 		for j, val := range line[1:] {
+			if math.IsNaN(val) {
+				continue
+			}
+
 			lheight := int((val / plot.maxVal) * float64(height-1))
 
 			plot.setBrailleLine(
