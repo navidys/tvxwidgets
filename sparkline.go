@@ -1,6 +1,7 @@
 package tvxwidgets
 
 import (
+	"math"
 	"sync"
 
 	"github.com/gdamore/tcell/v2"
@@ -40,13 +41,18 @@ func (sl *Sparkline) Draw(screen tcell.Screen) {
 	}
 
 	maxVal := getMaxFloat64FromSlice(sl.data)
-	if maxVal == 0 {
+	if maxVal < 0 {
 		return
 	}
 
 	// print lines
 	for i := 0; i < len(sl.data) && i+x < x+width; i++ {
 		data := sl.data[i]
+
+		if math.IsNaN(data) {
+			continue
+		}
+
 		dHeight := int((data / maxVal) * float64(barHeight))
 
 		sparkChar := barsRune[len(barsRune)-1]

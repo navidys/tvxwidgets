@@ -110,8 +110,11 @@ func getMaxFloat64FromSlice(slice []float64) float64 {
 		return 0
 	}
 
-	max := slice[0]
-	for i := 1; i < len(slice); i++ {
+	max := -1.0
+	for i := 0; i < len(slice); i++ {
+		if math.IsNaN(slice[i]) {
+			continue
+		}
 		if slice[i] > max {
 			max = slice[i]
 		}
