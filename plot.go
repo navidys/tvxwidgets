@@ -51,8 +51,11 @@ type brailleCell struct {
 // Plot represents a plot primitive used for different charts.
 type Plot struct {
 	*tview.Box
-	data               [][]float64
-	maxVal             float64
+	data [][]float64
+	// maxVal is the maximum y-axis (vertical) value found in any of the lines in the data set.
+	maxVal float64
+	// minVal is the minimum y-axis (vertical) value found in any of the lines in the data set.
+	minVal             float64
 	marker             Marker
 	ptype              PlotType
 	dotMarkerRune      rune
@@ -158,6 +161,15 @@ func (plot *Plot) SetData(data [][]float64) {
 	plot.brailleCellMap = make(map[image.Point]brailleCell)
 	plot.data = data
 	plot.maxVal = getMaxFloat64From2dSlice(data)
+	plot.minVal = getMinFloat64From2dSlice(data)
+}
+
+func (plot *Plot) SetMaxVal(maxVal float64) {
+	plot.maxVal = maxVal
+}
+
+func (plot *Plot) SetMinVal(minVal float64) {
+	plot.minVal = minVal
 }
 
 // SetDotMarkerRune sets dot marker rune.
@@ -253,15 +265,16 @@ func (plot *Plot) drawXAxisLabelToScreen(
 }
 
 func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
-	verticalScale := plot.maxVal / float64(height-plotXAxisLabelsHeight-1)
+	verticalOffset := plot.minVal
+	verticalScale := (plot.maxVal - plot.minVal) / float64(height-plotXAxisLabelsHeight-1)
 	previousLabel := ""
 
 	for i := 0; i*(plotYAxisLabelsGap+1) < height-1; i++ {
 		var label string
 		if plot.yAxisLabelDataType == PlotYAxisLabelDataFloat {
-			label = fmt.Sprintf("%.2f", float64(i)*verticalScale*(plotYAxisLabelsGap+1))
+			label = fmt.Sprintf("%.2f", float64(i)*verticalScale*(plotYAxisLabelsGap+1)+verticalOffset)
 		} else {
-			label = strconv.Itoa(int(float64(i) * verticalScale * (plotYAxisLabelsGap + 1)))
+			label = strconv.Itoa(int(float64(i)*verticalScale*(plotYAxisLabelsGap+1) + verticalOffset))
 		}
 
 		// Prevent same label being shown twice.
@@ -288,6 +301,8 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 
 	switch plot.ptype {
 	case PlotTypeLineChart:
+		verticalOffset := -plot.minVal
+
 		for i, line := range chartData {
 			style := tcell.StyleDefault.Background(plot.GetBackgroundColor()).Foreground(plot.lineColors[i])
 
@@ -297,7 +312,7 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 					continue
 				}
 
-				lheight := int((val / plot.maxVal) * float64(height-1))
+				lheight := int(((val + verticalOffset) / plot.maxVal) * float64(height-1))
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
 					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-1-lheight, plot.dotMarkerRune, style)
@@ -355,7 +370,7 @@ func (plot *Plot) calcBrailleLines() {
 		previousHeight := 0
 
 		if !lastValWasNaN {
-			previousHeight = calcDataPointHeight(line[0], plot.maxVal, 0, height)
+			previousHeight = calcDataPointHeight(line[0], plot.maxVal, plot.minVal, height)
 		}
 
 		for j, val := range line[1:] {
@@ -377,13 +392,13 @@ func (plot *Plot) calcBrailleLines() {
 			}
 
 			if lastValWasNaN {
-				previousHeight = calcDataPointHeight(val, plot.maxVal, 0, height)
+				previousHeight = calcDataPointHeight(val, plot.maxVal, plot.minVal, height)
 				lastValWasNaN = false
 
 				continue
 			}
 
-			lheight := calcDataPointHeight(val, plot.maxVal, 0, height)
+			lheight := calcDataPointHeight(val, plot.maxVal, plot.minVal, height)
 
 			plot.setBrailleLine(
 				image.Pt(

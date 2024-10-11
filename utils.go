@@ -104,6 +104,34 @@ func getMaxFloat64From2dSlice(slices [][]float64) float64 {
 	return max
 }
 
+func getMinFloat64From2dSlice(slices [][]float64) float64 {
+	if len(slices) == 0 {
+		return 0
+	}
+
+	var (
+		min       float64
+		minIsInit bool
+	)
+
+	for _, slice := range slices {
+		for _, val := range slice {
+			if !minIsInit {
+				minIsInit = true
+				min = val
+
+				continue
+			}
+
+			if val < min {
+				min = val
+			}
+		}
+	}
+
+	return min
+}
+
 // returns max values in float64 slices.
 func getMaxFloat64FromSlice(slice []float64) float64 {
 	if len(slice) == 0 {
