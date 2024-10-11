@@ -338,6 +338,10 @@ func (plot *Plot) drawBrailleMarkerToScreen(screen tcell.Screen) {
 	}
 }
 
+func calcDataPointHeight(val, maxVal, minVal float64, height int) int {
+	return int(((val - minVal) / (maxVal - minVal)) * float64(height-1))
+}
+
 func (plot *Plot) calcBrailleLines() {
 	x, y, _, height := plot.GetPlotRect()
 	chartData := plot.getData()
@@ -347,14 +351,24 @@ func (plot *Plot) calcBrailleLines() {
 			continue
 		}
 
-		previousHeight := int((line[0] / plot.maxVal) * float64(height-1))
-
+		lastValWasNaN := math.IsNaN(line[0])
+		previousHeight := 0
+		if !lastValWasNaN {
+			previousHeight = calcDataPointHeight(line[0], plot.maxVal, 0, height)
+		}
 		for j, val := range line[1:] {
 			if math.IsNaN(val) {
+				lastValWasNaN = true
 				continue
 			}
 
-			lheight := int((val / plot.maxVal) * float64(height-1))
+			if lastValWasNaN {
+				previousHeight = calcDataPointHeight(val, plot.maxVal, 0, height)
+				lastValWasNaN = false
+				continue
+			}
+
+			lheight := calcDataPointHeight(val, plot.maxVal, 0, height)
 
 			plot.setBrailleLine(
 				image.Pt(
