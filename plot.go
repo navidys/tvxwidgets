@@ -358,6 +358,17 @@ func (plot *Plot) calcBrailleLines() {
 		}
 		for j, val := range line[1:] {
 			if math.IsNaN(val) {
+				if !lastValWasNaN {
+					// last data point was single valid data point
+					plot.setBraillePoint(
+						image.Pt(
+							(x+(j*plotHorizontalScale))*2, //nolint:gomnd
+							(y+height-previousHeight-1)*4, //nolint:gomnd
+						),
+						plot.lineColors[i],
+					)
+				}
+
 				lastValWasNaN = true
 				continue
 			}
