@@ -298,11 +298,10 @@ func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWid
 func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 	x, y, width, height := plot.GetPlotRect()
 	chartData := plot.getData()
+	verticalOffset := -plot.minVal
 
 	switch plot.ptype {
 	case PlotTypeLineChart:
-		verticalOffset := -plot.minVal
-
 		for i, line := range chartData {
 			style := tcell.StyleDefault.Background(plot.GetBackgroundColor()).Foreground(plot.lineColors[i])
 
@@ -313,6 +312,9 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 				}
 
 				lheight := int(((val + verticalOffset) / plot.maxVal) * float64(height-1))
+				if lheight > height {
+					continue
+				}
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
 					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-1-lheight, plot.dotMarkerRune, style)
@@ -329,7 +331,10 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 					continue
 				}
 
-				lheight := int((val / plot.maxVal) * float64(height-1))
+				lheight := int(((val + verticalOffset) / plot.maxVal) * float64(height-1))
+				if lheight > height {
+					continue
+				}
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
 					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-1-lheight, plot.dotMarkerRune, style)
