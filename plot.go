@@ -353,9 +353,11 @@ func (plot *Plot) calcBrailleLines() {
 
 		lastValWasNaN := math.IsNaN(line[0])
 		previousHeight := 0
+
 		if !lastValWasNaN {
 			previousHeight = calcDataPointHeight(line[0], plot.maxVal, 0, height)
 		}
+
 		for j, val := range line[1:] {
 			if math.IsNaN(val) {
 				if !lastValWasNaN {
@@ -370,12 +372,14 @@ func (plot *Plot) calcBrailleLines() {
 				}
 
 				lastValWasNaN = true
+
 				continue
 			}
 
 			if lastValWasNaN {
 				previousHeight = calcDataPointHeight(val, plot.maxVal, 0, height)
 				lastValWasNaN = false
+
 				continue
 			}
 
