@@ -188,6 +188,11 @@ func (plot *Plot) SetMinVal(minVal float64) {
 	plot.minVal = minVal
 }
 
+func (plot *Plot) SetYRange(minVal float64, maxVal float64) {
+	plot.minVal = minVal
+	plot.maxVal = maxVal
+}
+
 // SetDotMarkerRune sets dot marker rune.
 func (plot *Plot) SetDotMarkerRune(r rune) {
 	plot.dotMarkerRune = r

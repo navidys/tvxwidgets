@@ -33,9 +33,11 @@ func main() {
 		tcell.ColorGreen,
 	})
 	bmLineChart.SetMarker(tvxwidgets.PlotMarkerBraille)
-	bmLineChart.SetYAxisAutoScaleMin(true)
-	bmLineChart.SetYAxisAutoScaleMax(true)
+	bmLineChart.SetYAxisAutoScaleMin(false)
+	bmLineChart.SetYAxisAutoScaleMax(false)
 	bmLineChart.SetData(sinData)
+	bmLineChart.SetYRange(-1, 1)
+
 	bmLineChart.SetDrawXAxisLabel(false)
 
 	dmLineChart := tvxwidgets.NewPlot()
@@ -58,11 +60,10 @@ func main() {
 	dotModeChartData[0] = append(dotModeChartData[0], sampleData2[5:]...)
 	dotModeChartData[0] = append(dotModeChartData[0], sampleData1[:7]...)
 	dotModeChartData[0] = append(dotModeChartData[0], sampleData2[3:]...)
-	dmLineChart.SetYAxisAutoScaleMin(true)
-	dmLineChart.SetYAxisAutoScaleMax(true)
+	dmLineChart.SetYAxisAutoScaleMin(false)
+	dmLineChart.SetYAxisAutoScaleMax(false)
 	dmLineChart.SetData(dotModeChartData)
-	dmLineChart.SetMaxVal(7.0)
-	dmLineChart.SetMinVal(5.0)
+	dmLineChart.SetYRange(0, 3)
 
 	scatterPlotData := make([][]float64, 2)
 	scatterPlotData[0] = []float64{1, 2, 3, 4, 5}
@@ -77,11 +78,10 @@ func main() {
 	})
 	dmScatterPlot.SetPlotType(tvxwidgets.PlotTypeScatter)
 	dmScatterPlot.SetMarker(tvxwidgets.PlotMarkerDot)
-	dmScatterPlot.SetYAxisAutoScaleMin(true)
-	dmScatterPlot.SetYAxisAutoScaleMax(true)
+	dmScatterPlot.SetYAxisAutoScaleMin(false)
+	dmScatterPlot.SetYAxisAutoScaleMax(false)
 	dmScatterPlot.SetData(scatterPlotData)
-	dmScatterPlot.SetMaxVal(3)
-	dmScatterPlot.SetMinVal(-1)
+	dmScatterPlot.SetYRange(-1, 3)
 	dmScatterPlot.SetDrawYAxisLabel(false)
 
 	bmScatterPlot := tvxwidgets.NewPlot()
@@ -93,11 +93,10 @@ func main() {
 	})
 	bmScatterPlot.SetPlotType(tvxwidgets.PlotTypeScatter)
 	bmScatterPlot.SetMarker(tvxwidgets.PlotMarkerBraille)
-	bmScatterPlot.SetYAxisAutoScaleMin(true)
-	bmScatterPlot.SetYAxisAutoScaleMax(true)
+	bmScatterPlot.SetYAxisAutoScaleMin(false)
+	bmScatterPlot.SetYAxisAutoScaleMax(false)
 	bmScatterPlot.SetData(scatterPlotData)
-	bmScatterPlot.SetMaxVal(5.0)
-	bmScatterPlot.SetMinVal(0.0)
+	bmScatterPlot.SetYRange(0, 5)
 
 	firstRow := tview.NewFlex().SetDirection(tview.FlexColumn)
 	firstRow.AddItem(dmLineChart, 0, 1, false)
