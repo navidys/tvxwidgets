@@ -283,9 +283,9 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 func (plot *Plot) drawXAxisLabelToScreen(
 	screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int,
 ) {
-	globalStartX := x + plotYAxisLabelsWidth + 1
-	globalEndX := x + width
-	globalAvailableWidth := globalEndX - globalStartX
+	xAxisAreaStartX := x + plotYAxisLabelsWidth + 1
+	xAxisAreaEndX := x + width
+	xAxisAvailableWidth := xAxisAreaEndX - xAxisAreaStartX
 
 	labelMap := map[int]string{}
 	labelStartMap := map[int]int{}
@@ -324,7 +324,7 @@ func (plot *Plot) drawXAxisLabelToScreen(
 	// stopping when there is no more space
 	lastUsedLabelEnd := math.MinInt
 	isFirstLabel := true
-	initialOffset := globalStartX
+	initialOffset := xAxisAreaStartX
 	for i := 0; i < maxDataPoints; i++ {
 		rawLabel := labelMap[i]
 		labelWithGap := rawLabel
@@ -340,7 +340,7 @@ func (plot *Plot) drawXAxisLabelToScreen(
 			continue
 		}
 		expectedLabelWidth := len(labelWithGap)
-		remainingWidth := globalAvailableWidth - labelStart
+		remainingWidth := xAxisAvailableWidth - labelStart
 		if expectedLabelWidth > remainingWidth {
 			// the label would be too long to fit in the remaining space
 			if expectedLabelWidth-1 <= remainingWidth {
