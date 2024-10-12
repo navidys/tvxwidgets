@@ -66,6 +66,8 @@ type Plot struct {
 	drawXAxisLabel     bool
 	drawYAxisLabel     bool
 	yAxisLabelDataType PlotYAxisLabelDataType
+	YAxisAutoScaleMin  bool
+	YAxisAutoScaleMax  bool
 	brailleCellMap     map[image.Point]brailleCell
 	mu                 sync.Mutex
 }
@@ -83,6 +85,8 @@ func NewPlot() *Plot {
 		drawXAxisLabel:     true,
 		drawYAxisLabel:     true,
 		yAxisLabelDataType: PlotYAxisLabelDataFloat,
+		YAxisAutoScaleMin:  false,
+		YAxisAutoScaleMax:  true,
 		lineColors: []tcell.Color{
 			tcell.ColorSteelBlue,
 		},
@@ -116,6 +120,14 @@ func (plot *Plot) SetLineColor(color []tcell.Color) {
 // SetYAxisLabelDataType sets Y axis label data type (integer or float).
 func (plot *Plot) SetYAxisLabelDataType(dataType PlotYAxisLabelDataType) {
 	plot.yAxisLabelDataType = dataType
+}
+
+func (plot *Plot) SetYAxisAutoScaleMin(autoScale bool) {
+	plot.YAxisAutoScaleMin = autoScale
+}
+
+func (plot *Plot) SetYAxisAutoScaleMax(autoScale bool) {
+	plot.YAxisAutoScaleMax = autoScale
 }
 
 // SetAxesColor sets axes x and y lines color.
@@ -160,8 +172,12 @@ func (plot *Plot) SetData(data [][]float64) {
 
 	plot.brailleCellMap = make(map[image.Point]brailleCell)
 	plot.data = data
-	plot.maxVal = getMaxFloat64From2dSlice(data)
-	plot.minVal = getMinFloat64From2dSlice(data)
+	if plot.YAxisAutoScaleMax {
+		plot.maxVal = getMaxFloat64From2dSlice(data)
+	}
+	if plot.YAxisAutoScaleMin {
+		plot.minVal = getMinFloat64From2dSlice(data)
+	}
 }
 
 func (plot *Plot) SetMaxVal(maxVal float64) {
