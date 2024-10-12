@@ -27,15 +27,9 @@ func main() {
 		n := 170
 		data := make([][]float64, 1)
 		data[0] = make([]float64, n)
-		xToYMap := make(map[float64]float64)
-		mappedValues := []string{}
 		for i := 0; i < n; i++ {
 			xVal := xFunc1(i)
 			yVal := yFunc1(xVal)
-
-			xToYMap[xVal] = yVal
-
-			mappedValues = append(mappedValues, fmt.Sprintf("%.2f -> %.2f", xVal, yVal))
 			data[0][i] = yVal
 		}
 
