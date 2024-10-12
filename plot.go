@@ -5,6 +5,7 @@ import (
 	"image"
 	"math"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/gdamore/tcell/v2"
@@ -41,6 +42,8 @@ const (
 	plotXAxisLabelsHeight = 1
 	plotXAxisLabelsGap    = 2
 	plotYAxisLabelsGap    = 1
+
+	gapRune = " "
 )
 
 type brailleCell struct {
@@ -280,20 +283,80 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 func (plot *Plot) drawXAxisLabelToScreen(
 	screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int,
 ) {
-	maxLabelX := x + width - 1
-	for labelX := x + plotYAxisLabelsWidth; labelX < maxLabelX; {
-		requiredSpaceForLabel := len(plot.xAxisLabelFunc(0)) * plotHorizontalScale
-		if labelX+requiredSpaceForLabel > maxLabelX {
+	globalStartX := x + plotYAxisLabelsWidth + 1
+	globalEndX := x + width
+	globalAvailableWidth := globalEndX - globalStartX
+
+	labelMap := map[int]string{}
+	labelStartMap := map[int]int{}
+
+	maxDataPoints := 0
+	for _, d := range plot.data {
+		maxDataPoints = max(maxDataPoints, len(d))
+	}
+
+	// determine the width needed for the largest label
+	maxXAxisLabelWidth := 0
+	for _, d := range plot.data {
+		for i, _ := range d {
+			label := plot.xAxisLabelFunc(i)
+			labelMap[i] = label
+			maxXAxisLabelWidth = max(maxXAxisLabelWidth, len(label))
+		}
+	}
+
+	// determine the start position for each label, if they were
+	// to be centered below the data point.
+	// Note: not all of these labels will be printed, as they would
+	// overlap with each other
+	for i, label := range labelMap {
+		expectedLabelWidth := len(label)
+		if i == 0 {
+			expectedLabelWidth += plotXAxisLabelsGap / 2
+		} else {
+			expectedLabelWidth += plotXAxisLabelsGap
+		}
+		currentLabelStart := i - int(math.Round(float64(expectedLabelWidth)/2))
+		labelStartMap[i] = currentLabelStart
+	}
+
+	// print the labels, skipping those that would overlap,
+	// stopping when there is no more space
+	lastUsedLabelEnd := math.MinInt
+	isFirstLabel := true
+	initialOffset := globalStartX
+	for i := 0; i < maxDataPoints; i++ {
+		rawLabel := labelMap[i]
+		labelWithGap := rawLabel
+		if i == 0 {
+			labelWithGap += strings.Repeat(gapRune, plotXAxisLabelsGap/2)
+		} else {
+			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + labelWithGap + strings.Repeat(gapRune, plotXAxisLabelsGap/2)
+		}
+
+		labelStart := labelStartMap[i]
+		if !isFirstLabel && labelStart < lastUsedLabelEnd {
+			// the label would overlap with the previous label
+			continue
+		}
+		expectedLabelWidth := len(labelWithGap)
+		remainingWidth := globalAvailableWidth - labelStart
+		if expectedLabelWidth > remainingWidth {
 			// the label would be too long to fit in the remaining space
+			if expectedLabelWidth-1 <= remainingWidth {
+				// if we omit the last gap, it fits, so we draw that
+				expectedLabelWidth--
+				labelWithoutGap := labelWithGap[:len(labelWithGap)-1]
+				tview.Print(screen, labelWithoutGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight, expectedLabelWidth, tview.AlignLeft, plot.axesLabelColor)
+			} else {
+				// it would not fit, skip it
+			}
 			break
 		}
 
-		labelIndex := (labelX-(x+plotYAxisLabelsWidth)-1)/(plotHorizontalScale) + 1
-		label := plot.xAxisLabelFunc(labelIndex)
-
-		_, usedWidth := tview.Print(screen, label, labelX, y+height-plotXAxisLabelsHeight, width, tview.AlignLeft, plot.axesLabelColor)
-
-		labelX += (usedWidth + plotXAxisLabelsGap) * plotHorizontalScale
+		lastUsedLabelEnd = labelStart + expectedLabelWidth
+		tview.Print(screen, labelWithGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight, expectedLabelWidth, tview.AlignLeft, plot.axesLabelColor)
+		isFirstLabel = false
 	}
 }
 
