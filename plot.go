@@ -280,13 +280,19 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 func (plot *Plot) drawXAxisLabelToScreen(
 	screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int,
 ) {
-	for labelX := x + plotYAxisLabelsWidth; labelX < x+width-1; {
+	maxLabelX := x + width - 1
+	for labelX := x + plotYAxisLabelsWidth; labelX < maxLabelX; {
+		requiredSpaceForLabel := len(plot.xAxisLabelFunc(0)) * plotHorizontalScale
+		if labelX+requiredSpaceForLabel > maxLabelX {
+			break
+		}
+
 		labelIndex := (labelX-(x+plotYAxisLabelsWidth)-1)/(plotHorizontalScale) + 1
 		label := plot.xAxisLabelFunc(labelIndex)
 
-		tview.Print(screen, label, labelX, y+height-plotXAxisLabelsHeight, width, tview.AlignLeft, plot.axesLabelColor)
+		_, usedWidth := tview.Print(screen, label, labelX, y+height-plotXAxisLabelsHeight, width, tview.AlignLeft, plot.axesLabelColor)
 
-		labelX += (len(label) + plotXAxisLabelsGap) * plotHorizontalScale
+		labelX += (usedWidth + plotXAxisLabelsGap) * plotHorizontalScale
 	}
 }
 
