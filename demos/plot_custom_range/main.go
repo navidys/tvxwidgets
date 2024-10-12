@@ -1,11 +1,10 @@
 package main
 
 import (
-	"math"
-
 	"github.com/gdamore/tcell/v2"
 	"github.com/navidys/tvxwidgets"
 	"github.com/rivo/tview"
+	"math"
 )
 
 func main() {
@@ -34,9 +33,9 @@ func main() {
 		tcell.ColorGreen,
 	})
 	bmLineChart.SetMarker(tvxwidgets.PlotMarkerBraille)
+	bmLineChart.SetYAxisAutoScaleMin(true)
+	bmLineChart.SetYAxisAutoScaleMax(true)
 	bmLineChart.SetData(sinData)
-	bmLineChart.SetMaxVal(1.5)
-	bmLineChart.SetMinVal(-1.5)
 	bmLineChart.SetDrawXAxisLabel(false)
 
 	dmLineChart := tvxwidgets.NewPlot()
@@ -59,9 +58,11 @@ func main() {
 	dotModeChartData[0] = append(dotModeChartData[0], sampleData2[5:]...)
 	dotModeChartData[0] = append(dotModeChartData[0], sampleData1[:7]...)
 	dotModeChartData[0] = append(dotModeChartData[0], sampleData2[3:]...)
+	dmLineChart.SetYAxisAutoScaleMin(true)
+	dmLineChart.SetYAxisAutoScaleMax(true)
 	dmLineChart.SetData(dotModeChartData)
-	dmLineChart.SetMaxVal(11.0)
-	dmLineChart.SetMinVal(0.0)
+	dmLineChart.SetMaxVal(7.0)
+	dmLineChart.SetMinVal(5.0)
 
 	scatterPlotData := make([][]float64, 2)
 	scatterPlotData[0] = []float64{1, 2, 3, 4, 5}
@@ -76,7 +77,11 @@ func main() {
 	})
 	dmScatterPlot.SetPlotType(tvxwidgets.PlotTypeScatter)
 	dmScatterPlot.SetMarker(tvxwidgets.PlotMarkerDot)
+	dmScatterPlot.SetYAxisAutoScaleMin(true)
+	dmScatterPlot.SetYAxisAutoScaleMax(true)
 	dmScatterPlot.SetData(scatterPlotData)
+	dmScatterPlot.SetMaxVal(3)
+	dmScatterPlot.SetMinVal(-1)
 	dmScatterPlot.SetDrawYAxisLabel(false)
 
 	bmScatterPlot := tvxwidgets.NewPlot()
@@ -88,8 +93,10 @@ func main() {
 	})
 	bmScatterPlot.SetPlotType(tvxwidgets.PlotTypeScatter)
 	bmScatterPlot.SetMarker(tvxwidgets.PlotMarkerBraille)
+	bmScatterPlot.SetYAxisAutoScaleMin(true)
+	bmScatterPlot.SetYAxisAutoScaleMax(true)
 	bmScatterPlot.SetData(scatterPlotData)
-	bmScatterPlot.SetMaxVal(10.0)
+	bmScatterPlot.SetMaxVal(5.0)
 	bmScatterPlot.SetMinVal(0.0)
 
 	firstRow := tview.NewFlex().SetDirection(tview.FlexColumn)
