@@ -344,12 +344,10 @@ func (plot *Plot) drawXAxisLabelToScreen(
 		if expectedLabelWidth > remainingWidth {
 			// the label would be too long to fit in the remaining space
 			if expectedLabelWidth-1 <= remainingWidth {
-				// if we omit the last gap, it fits, so we draw that
+				// if we omit the last gap, it fits, so we draw that before stopping
 				expectedLabelWidth--
 				labelWithoutGap := labelWithGap[:len(labelWithGap)-1]
 				tview.Print(screen, labelWithoutGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight, expectedLabelWidth, tview.AlignLeft, plot.axesLabelColor)
-			} else {
-				// it would not fit, skip it
 			}
 			break
 		}
