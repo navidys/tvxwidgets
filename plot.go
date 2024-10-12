@@ -64,6 +64,7 @@ type Plot struct {
 	axesLabelColor     tcell.Color
 	drawAxes           bool
 	drawXAxisLabel     bool
+	xAxisLabelFunc     func(int) string
 	drawYAxisLabel     bool
 	yAxisLabelDataType PlotYAxisLabelDataType
 	yAxisAutoScaleMin  bool
@@ -83,6 +84,7 @@ func NewPlot() *Plot {
 		axesLabelColor:     tcell.ColorDimGray,
 		drawAxes:           true,
 		drawXAxisLabel:     true,
+		xAxisLabelFunc:     func(i int) string { return strconv.Itoa(i) },
 		drawYAxisLabel:     true,
 		yAxisLabelDataType: PlotYAxisLabelDataFloat,
 		yAxisAutoScaleMin:  false,
@@ -150,6 +152,11 @@ func (plot *Plot) SetDrawAxes(draw bool) {
 // SetDrawXAxisLabel set true in order to draw x axis label to screen.
 func (plot *Plot) SetDrawXAxisLabel(draw bool) {
 	plot.drawXAxisLabel = draw
+}
+
+// SetXAxisLabelFunc sets x axis label function.
+func (plot *Plot) SetXAxisLabelFunc(f func(int) string) {
+	plot.xAxisLabelFunc = f
 }
 
 // SetDrawYAxisLabel set true in order to draw y axis label to screen.
@@ -273,15 +280,9 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 func (plot *Plot) drawXAxisLabelToScreen(
 	screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int,
 ) {
-	tview.Print(screen, "0",
-		x+plotYAxisLabelsWidth,
-		y+height-plotXAxisLabelsHeight,
-		1,
-		tview.AlignLeft, plot.axesLabelColor)
-
-	for labelX := x + plotYAxisLabelsWidth +
-		(plotXAxisLabelsGap)*plotHorizontalScale + 1; labelX < x+width-1; {
-		label := strconv.Itoa((labelX-(x+plotYAxisLabelsWidth)-1)/(plotHorizontalScale) + 1)
+	for labelX := x + plotYAxisLabelsWidth; labelX < x+width-1; {
+		labelIndex := (labelX-(x+plotYAxisLabelsWidth)-1)/(plotHorizontalScale) + 1
+		label := plot.xAxisLabelFunc(labelIndex)
 
 		tview.Print(screen, label, labelX, y+height-plotXAxisLabelsHeight, width, tview.AlignLeft, plot.axesLabelColor)
 
