@@ -284,6 +284,7 @@ func (plot *Plot) drawXAxisLabelToScreen(
 	for labelX := x + plotYAxisLabelsWidth; labelX < maxLabelX; {
 		requiredSpaceForLabel := len(plot.xAxisLabelFunc(0)) * plotHorizontalScale
 		if labelX+requiredSpaceForLabel > maxLabelX {
+			// the label would be too long to fit in the remaining space
 			break
 		}
 
