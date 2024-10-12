@@ -378,6 +378,17 @@ func calcDataPointHeight(val, maxVal, minVal float64, height int) int {
 	return int(((val - minVal) / (maxVal - minVal)) * float64(height-1))
 }
 
+func calcDataPointHeightIfInBounds(val float64, maxVal float64, minVal float64, height int) (int, bool) {
+	if math.IsNaN(val) {
+		return 0, false
+	}
+	result := calcDataPointHeight(val, maxVal, minVal, height)
+	if (val > maxVal) || (val < minVal) || (result > height) {
+		return result, false
+	}
+	return result, true
+}
+
 func (plot *Plot) calcBrailleLines() {
 	x, y, _, height := plot.GetPlotRect()
 	chartData := plot.getData()
@@ -387,58 +398,52 @@ func (plot *Plot) calcBrailleLines() {
 			continue
 		}
 
-		lastValWasNaN := math.IsNaN(line[0])
 		previousHeight := 0
+		lastValWasOk := false
+		for j, val := range line {
+			lheight, currentValIsOk := calcDataPointHeightIfInBounds(val, plot.maxVal, plot.minVal, height)
 
-		if !lastValWasNaN {
-			previousHeight = calcDataPointHeight(line[0], plot.maxVal, plot.minVal, height)
-		}
-
-		for j, val := range line[1:] {
-			if math.IsNaN(val) {
-				if !lastValWasNaN {
-					// last data point was single valid data point
-					plot.setBraillePoint(
-						image.Pt(
-							(x+(j*plotHorizontalScale))*2, //nolint:gomnd
-							(y+height-previousHeight-1)*4, //nolint:gomnd
-						),
-						plot.lineColors[i],
-					)
-				}
-
-				lastValWasNaN = true
-
+			if !lastValWasOk && !currentValIsOk {
+				// nothing valid to draw, skip to next data point
 				continue
+			} else if !lastValWasOk {
+				// current data point is single valid data point, draw it individually
+				plot.setBraillePoint(
+					calcBraillePoint(x, j+1, y, height, lheight),
+					plot.lineColors[i],
+				)
+			} else if !currentValIsOk {
+				// last data point was single valid data point, draw it individually
+				plot.setBraillePoint(
+					calcBraillePoint(x, j, y, height, previousHeight),
+					plot.lineColors[i],
+				)
+			} else {
+				// we have two valid data points, draw a line between them
+				plot.setBrailleLine(
+					calcBraillePoint(x, j, y, height, previousHeight),
+					calcBraillePoint(x, j+1, y, height, lheight),
+					plot.lineColors[i],
+				)
 			}
 
-			if lastValWasNaN {
-				previousHeight = calcDataPointHeight(val, plot.maxVal, plot.minVal, height)
-				lastValWasNaN = false
-
-				continue
-			}
-
-			lheight := calcDataPointHeight(val, plot.maxVal, plot.minVal, height)
-
-			plot.setBrailleLine(
-				image.Pt(
-					(x+(j*plotHorizontalScale))*2, //nolint:gomnd
-					(y+height-previousHeight-1)*4, //nolint:gomnd
-				),
-				image.Pt(
-					(x+((j+1)*plotHorizontalScale))*2, //nolint:gomnd
-					(y+height-lheight-1)*4,            //nolint:gomnd
-				),
-				plot.lineColors[i],
-			)
-
+			lastValWasOk = currentValIsOk
 			previousHeight = lheight
 		}
 	}
 }
 
+func calcBraillePoint(x, j, y, maxY, height int) image.Point {
+	return image.Pt(
+		(x+(j*plotHorizontalScale))*2, //nolint:gomnd
+		(y+maxY-height-1)*4,           //nolint:gomnd
+	)
+}
+
 func (plot *Plot) setBraillePoint(p image.Point, color tcell.Color) {
+	if p.X < 0 || p.Y < 0 {
+		return
+	}
 	point := image.Pt(p.X/2, p.Y/4) //nolint:gomnd
 	plot.brailleCellMap[point] = brailleCell{
 		plot.brailleCellMap[point].cRune | brailleRune[p.Y%4][p.X%2],
