@@ -35,8 +35,8 @@ func main() {
 	bmLineChart.SetMarker(tvxwidgets.PlotMarkerBraille)
 	bmLineChart.SetYAxisAutoScaleMin(false)
 	bmLineChart.SetYAxisAutoScaleMax(false)
+	bmLineChart.SetYRange(-1.5, 1.5)
 	bmLineChart.SetData(sinData)
-	bmLineChart.SetYRange(-1, 1)
 
 	bmLineChart.SetDrawXAxisLabel(false)
 
@@ -62,8 +62,8 @@ func main() {
 	dotModeChartData[0] = append(dotModeChartData[0], sampleData2[3:]...)
 	dmLineChart.SetYAxisAutoScaleMin(false)
 	dmLineChart.SetYAxisAutoScaleMax(false)
-	dmLineChart.SetData(dotModeChartData)
 	dmLineChart.SetYRange(0, 3)
+	dmLineChart.SetData(dotModeChartData)
 
 	scatterPlotData := make([][]float64, 2)
 	scatterPlotData[0] = []float64{1, 2, 3, 4, 5}
@@ -80,8 +80,8 @@ func main() {
 	dmScatterPlot.SetMarker(tvxwidgets.PlotMarkerDot)
 	dmScatterPlot.SetYAxisAutoScaleMin(false)
 	dmScatterPlot.SetYAxisAutoScaleMax(false)
-	dmScatterPlot.SetData(scatterPlotData)
 	dmScatterPlot.SetYRange(-1, 3)
+	dmScatterPlot.SetData(scatterPlotData)
 	dmScatterPlot.SetDrawYAxisLabel(false)
 
 	bmScatterPlot := tvxwidgets.NewPlot()
@@ -95,8 +95,8 @@ func main() {
 	bmScatterPlot.SetMarker(tvxwidgets.PlotMarkerBraille)
 	bmScatterPlot.SetYAxisAutoScaleMin(false)
 	bmScatterPlot.SetYAxisAutoScaleMax(false)
+	bmScatterPlot.SetYRange(-1, 5)
 	bmScatterPlot.SetData(scatterPlotData)
-	bmScatterPlot.SetYRange(0, 5)
 
 	firstRow := tview.NewFlex().SetDirection(tview.FlexColumn)
 	firstRow.AddItem(dmLineChart, 0, 1, false)
