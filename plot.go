@@ -3,6 +3,7 @@ package tvxwidgets
 import (
 	"fmt"
 	"image"
+	"math"
 	"strconv"
 	"sync"
 
@@ -292,6 +293,10 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 
 			for j := 0; j < len(line) && j*plotHorizontalScale < width; j++ {
 				val := line[j]
+				if math.IsNaN(val) {
+					continue
+				}
+
 				lheight := int((val / plot.maxVal) * float64(height-1))
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
@@ -305,6 +310,10 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 			style := tcell.StyleDefault.Background(plot.GetBackgroundColor()).Foreground(plot.lineColors[i])
 
 			for j, val := range line {
+				if math.IsNaN(val) {
+					continue
+				}
+
 				lheight := int((val / plot.maxVal) * float64(height-1))
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
@@ -329,6 +338,10 @@ func (plot *Plot) drawBrailleMarkerToScreen(screen tcell.Screen) {
 	}
 }
 
+func calcDataPointHeight(val, maxVal, minVal float64, height int) int {
+	return int(((val - minVal) / (maxVal - minVal)) * float64(height-1))
+}
+
 func (plot *Plot) calcBrailleLines() {
 	x, y, _, height := plot.GetPlotRect()
 	chartData := plot.getData()
@@ -338,10 +351,39 @@ func (plot *Plot) calcBrailleLines() {
 			continue
 		}
 
-		previousHeight := int((line[0] / plot.maxVal) * float64(height-1))
+		lastValWasNaN := math.IsNaN(line[0])
+		previousHeight := 0
+
+		if !lastValWasNaN {
+			previousHeight = calcDataPointHeight(line[0], plot.maxVal, 0, height)
+		}
 
 		for j, val := range line[1:] {
-			lheight := int((val / plot.maxVal) * float64(height-1))
+			if math.IsNaN(val) {
+				if !lastValWasNaN {
+					// last data point was single valid data point
+					plot.setBraillePoint(
+						image.Pt(
+							(x+(j*plotHorizontalScale))*2, //nolint:gomnd
+							(y+height-previousHeight-1)*4, //nolint:gomnd
+						),
+						plot.lineColors[i],
+					)
+				}
+
+				lastValWasNaN = true
+
+				continue
+			}
+
+			if lastValWasNaN {
+				previousHeight = calcDataPointHeight(val, plot.maxVal, 0, height)
+				lastValWasNaN = false
+
+				continue
+			}
+
+			lheight := calcDataPointHeight(val, plot.maxVal, 0, height)
 
 			plot.setBrailleLine(
 				image.Pt(
