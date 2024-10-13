@@ -326,6 +326,12 @@ func (plot *Plot) drawXAxisLabelToScreen(
 	isFirstLabel := true
 	initialOffset := xAxisAreaStartX
 	for i := 0; i < maxDataPoints; i++ {
+		labelStart := labelStartMap[i]
+		if !isFirstLabel && labelStart < lastUsedLabelEnd {
+			// the label would overlap with the previous label
+			continue
+		}
+
 		rawLabel := labelMap[i]
 		labelWithGap := rawLabel
 		if i == 0 {
@@ -334,11 +340,6 @@ func (plot *Plot) drawXAxisLabelToScreen(
 			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + labelWithGap + strings.Repeat(gapRune, plotXAxisLabelsGap/2)
 		}
 
-		labelStart := labelStartMap[i]
-		if !isFirstLabel && labelStart < lastUsedLabelEnd {
-			// the label would overlap with the previous label
-			continue
-		}
 		expectedLabelWidth := len(labelWithGap)
 		remainingWidth := xAxisAvailableWidth - labelStart
 		if expectedLabelWidth > remainingWidth {
