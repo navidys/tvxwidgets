@@ -347,14 +347,18 @@ func (plot *Plot) drawXAxisLabelToScreen(
 				// if we omit the last gap, it fits, so we draw that before stopping
 				expectedLabelWidth--
 				labelWithoutGap := labelWithGap[:len(labelWithGap)-1]
-				tview.Print(screen, labelWithoutGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight, expectedLabelWidth, tview.AlignLeft, plot.axesLabelColor)
+				plot.printXAxisLabel(screen, labelWithoutGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight)
 			}
 			break
 		}
 
 		lastUsedLabelEnd = labelStart + expectedLabelWidth
-		tview.Print(screen, labelWithGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight, expectedLabelWidth, tview.AlignLeft, plot.axesLabelColor)
+		plot.printXAxisLabel(screen, labelWithGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight)
 	}
+}
+
+func (plot *Plot) printXAxisLabel(screen tcell.Screen, label string, x, y int) {
+	tview.Print(screen, label, x, y, len(label), tview.AlignLeft, plot.axesLabelColor)
 }
 
 func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
