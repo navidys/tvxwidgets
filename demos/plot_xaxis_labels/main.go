@@ -23,38 +23,33 @@ func main() {
 	period := 2 * math.Pi
 	horizontalStretchFactor := 1.0
 	verticalStretchFactor := 1.0
+	//xOffset := period / 4
 	xOffset := 0.0
-	//xOffset = 0.0
-	yOffset := 1.0
+	yOffset := 0.0
 
-	// >>> Graph View Controls <<<
+	// >>> Graph View/Camera Controls <<<
 	// These values influence which part of the curve is shown in
 	// what "zoom level".
 
-	// Note: There is no way to only zoom the visible range on the x-axis, so we
-	// have to zoom the actual data values instead (see xAxisZoomFactor).
 	xAxisZoomFactor := 3.0
 	yAxisZoomFactor := 1.0
-
-	// Note: There is no way to only shift the visible range on the x-axis, so we
-	// have to shift both the actual data values and the labels instead (see xOffset and ).
-	xAxisShift := -period / 4
-	yAxisShift := 0.0
+	xAxisShift := 0.0
+	yAxisShift := 1.0
 
 	// xFunc1 defines the x values that should be used for each vertical "slot" in the graph.
 	xFunc1 := func(i int) float64 {
-		return (float64(i) / xAxisZoomFactor) + xOffset + xAxisShift
+		return (float64(i) / xAxisZoomFactor) + xAxisShift
 	}
 	// yFunc1 defines the y values that result from a given input value x (this is the actual function).
 	yFunc1 := func(x float64) float64 {
-		return (math.Sin((x)/horizontalStretchFactor) + yOffset) * verticalStretchFactor
+		return (math.Sin((x+xOffset)/horizontalStretchFactor) + yOffset) * verticalStretchFactor
 	}
 
 	// xLabelFunc1 defines a label for each vertical "slot". Which labels are shown is determined automatically
 	// based on the available space.
 	xLabelFunc1 := func(i int) string {
 		xVal := xFunc1(i)
-		labelVal := xVal + xOffset
+		labelVal := xVal
 		label := fmt.Sprintf("%.1f", labelVal)
 		return label
 	}
@@ -100,7 +95,7 @@ func main() {
 	layout.AddItem(firstRow, 0, 1, false)
 	layout.SetRect(0, 0, 100, 30)
 
-	animate := true
+	animate := false
 
 	rotateDataContinuously := func() {
 		tick := time.NewTicker(100 * time.Millisecond)
