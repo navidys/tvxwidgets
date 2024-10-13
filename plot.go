@@ -280,6 +280,7 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 	}
 }
 
+//nolint:funlen,cyclop
 func (plot *Plot) drawXAxisLabelsToScreen(
 	screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int,
 ) {
@@ -297,8 +298,8 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 
 	// determine the width needed for the largest label
 	maxXAxisLabelWidth := 0
-	for _, d := range plot.data {
 
+	for _, d := range plot.data {
 		for i := range d {
 			label := plot.xAxisLabelFunc(i)
 			labelMap[i] = label
@@ -313,11 +314,12 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 	for i, label := range labelMap {
 		expectedLabelWidth := len(label)
 		if i == 0 {
-			expectedLabelWidth += plotXAxisLabelsGap / 2
+			expectedLabelWidth += plotXAxisLabelsGap / 2 //nolint:gomnd
 		} else {
 			expectedLabelWidth += plotXAxisLabelsGap
 		}
-		currentLabelStart := i - int(math.Round(float64(expectedLabelWidth)/2))
+
+		currentLabelStart := i - int(math.Round(float64(expectedLabelWidth)/2)) //nolint:gomnd
 		labelStartMap[i] = currentLabelStart
 	}
 
@@ -337,9 +339,9 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 		labelWithGap := rawLabel
 
 		if i == 0 {
-			labelWithGap += strings.Repeat(gapRune, plotXAxisLabelsGap/2)
+			labelWithGap += strings.Repeat(gapRune, plotXAxisLabelsGap/2) //nolint:gomnd
 		} else {
-			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + labelWithGap + strings.Repeat(gapRune, plotXAxisLabelsGap/2)
+			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + labelWithGap + strings.Repeat(gapRune, plotXAxisLabelsGap/2) //nolint:lll,gomnd
 		}
 
 		expectedLabelWidth := len(labelWithGap)
