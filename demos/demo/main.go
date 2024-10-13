@@ -204,20 +204,9 @@ func main() {
 	}
 
 	moveSinData := func(data [][]float64) [][]float64 {
-		n := 220
 		newData := make([][]float64, 2)
-		newData[0] = make([]float64, n)
-		newData[1] = make([]float64, n)
-
-		for i := 0; i < n; i++ {
-			if i+1 < len(data[0]) {
-				newData[0][i] = data[0][i+1]
-			}
-			if i+1 < len(data[1]) {
-				newData[1][i] = data[1][i+1]
-			}
-		}
-
+		newData[0] = rotate(data[0], -1)
+		newData[1] = rotate(data[1], -1)
 		return newData
 	}
 
@@ -329,4 +318,24 @@ func newBarChart() *tvxwidgets.BarChart {
 	barGraph.AddBar("eth3", 100, tcell.ColorOrange)
 
 	return barGraph
+}
+
+// Source: https://stackoverflow.com/questions/50833673/rotate-array-in-go/79079760#79079760
+// rotate rotates the given slice by k positions to the left or right.
+func rotate[T any](slice []T, k int) []T {
+	if len(slice) == 0 {
+		return slice
+	}
+
+	var r int
+	if k > 0 {
+		r = len(slice) - k%len(slice)
+	} else {
+		kAbs := int(math.Abs(float64(k)))
+		r = kAbs % len(slice)
+	}
+
+	slice = append(slice[r:], slice[:r]...)
+
+	return slice
 }
