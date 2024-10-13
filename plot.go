@@ -323,11 +323,10 @@ func (plot *Plot) drawXAxisLabelToScreen(
 	// print the labels, skipping those that would overlap,
 	// stopping when there is no more space
 	lastUsedLabelEnd := math.MinInt
-	isFirstLabel := true
 	initialOffset := xAxisAreaStartX
 	for i := 0; i < maxDataPoints; i++ {
 		labelStart := labelStartMap[i]
-		if !isFirstLabel && labelStart < lastUsedLabelEnd {
+		if labelStart < lastUsedLabelEnd {
 			// the label would overlap with the previous label
 			continue
 		}
@@ -355,7 +354,6 @@ func (plot *Plot) drawXAxisLabelToScreen(
 
 		lastUsedLabelEnd = labelStart + expectedLabelWidth
 		tview.Print(screen, labelWithGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight, expectedLabelWidth, tview.AlignLeft, plot.axesLabelColor)
-		isFirstLabel = false
 	}
 }
 
