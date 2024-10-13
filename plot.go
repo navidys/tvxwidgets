@@ -272,15 +272,15 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 		tview.BoxDrawingsLightUpAndRight, axesStyle)
 
 	if plot.drawXAxisLabel {
-		plot.drawXAxisLabelToScreen(screen, plotYAxisLabelsWidth, x, y, width, height)
+		plot.drawXAxisLabelsToScreen(screen, plotYAxisLabelsWidth, x, y, width, height)
 	}
 
 	if plot.drawYAxisLabel {
-		plot.drawYAxisLabelToScreen(screen, plotYAxisLabelsWidth, x, y, height)
+		plot.drawYAxisLabelsToScreen(screen, plotYAxisLabelsWidth, x, y, height)
 	}
 }
 
-func (plot *Plot) drawXAxisLabelToScreen(
+func (plot *Plot) drawXAxisLabelsToScreen(
 	screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, width int, height int,
 ) {
 	xAxisAreaStartX := x + plotYAxisLabelsWidth + 1
@@ -361,7 +361,7 @@ func (plot *Plot) printXAxisLabel(screen tcell.Screen, label string, x, y int) {
 	tview.Print(screen, label, x, y, len(label), tview.AlignLeft, plot.axesLabelColor)
 }
 
-func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
+func (plot *Plot) drawYAxisLabelsToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
 	verticalOffset := plot.minVal
 	verticalScale := (plot.maxVal - plot.minVal) / float64(height-plotXAxisLabelsHeight-1)
 	previousLabel := ""
