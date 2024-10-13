@@ -122,10 +122,12 @@ func (plot *Plot) SetYAxisLabelDataType(dataType PlotYAxisLabelDataType) {
 	plot.yAxisLabelDataType = dataType
 }
 
+// SetYAxisAutoScaleMin enables YAxis min value autoscale.
 func (plot *Plot) SetYAxisAutoScaleMin(autoScale bool) {
 	plot.yAxisAutoScaleMin = autoScale
 }
 
+// SetYAxisAutoScaleMax enables YAxix max value autoscale.
 func (plot *Plot) SetYAxisAutoScaleMax(autoScale bool) {
 	plot.yAxisAutoScaleMax = autoScale
 }
@@ -172,9 +174,11 @@ func (plot *Plot) SetData(data [][]float64) {
 
 	plot.brailleCellMap = make(map[image.Point]brailleCell)
 	plot.data = data
+
 	if plot.yAxisAutoScaleMax {
 		plot.maxVal = getMaxFloat64From2dSlice(data)
 	}
+
 	if plot.yAxisAutoScaleMin {
 		plot.minVal = getMinFloat64From2dSlice(data)
 	}
@@ -315,7 +319,7 @@ func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWid
 	}
 }
 
-//nolint:cyclop
+//nolint:cyclop,gocognit
 func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 	x, y, width, height := plot.GetPlotRect()
 	chartData := plot.getData()
@@ -387,10 +391,12 @@ func calcDataPointHeightIfInBounds(val float64, maxVal float64, minVal float64, 
 	if math.IsNaN(val) {
 		return 0, false
 	}
+
 	result := calcDataPointHeight(val, maxVal, minVal, height)
 	if (val > maxVal) || (val < minVal) || (result > height) {
 		return result, false
 	}
+
 	return result, true
 }
 
@@ -405,13 +411,16 @@ func (plot *Plot) calcBrailleLines() {
 
 		previousHeight := 0
 		lastValWasOk := false
+
 		for j, val := range line {
 			lheight, currentValIsOk := calcDataPointHeightIfInBounds(val, plot.maxVal, plot.minVal, height)
 
 			if !lastValWasOk && !currentValIsOk {
 				// nothing valid to draw, skip to next data point
 				continue
-			} else if !lastValWasOk {
+			}
+
+			if !lastValWasOk { //nolint:gocritic
 				// current data point is single valid data point, draw it individually
 				plot.setBraillePoint(
 					calcBraillePoint(x, j+1, y, height, lheight),
@@ -449,6 +458,7 @@ func (plot *Plot) setBraillePoint(p image.Point, color tcell.Color) {
 	if p.X < 0 || p.Y < 0 {
 		return
 	}
+
 	point := image.Pt(p.X/2, p.Y/4) //nolint:gomnd
 	plot.brailleCellMap[point] = brailleCell{
 		plot.brailleCellMap[point].cRune | brailleRune[p.Y%4][p.X%2],
