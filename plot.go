@@ -298,7 +298,7 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 	// determine the width needed for the largest label
 	maxXAxisLabelWidth := 0
 	for _, d := range plot.data {
-		for i, _ := range d {
+		for i := range d {
 			label := plot.xAxisLabelFunc(i)
 			labelMap[i] = label
 			maxXAxisLabelWidth = max(maxXAxisLabelWidth, len(label))
