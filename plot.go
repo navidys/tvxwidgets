@@ -87,7 +87,7 @@ func NewPlot() *Plot {
 		axesLabelColor:     tcell.ColorDimGray,
 		drawAxes:           true,
 		drawXAxisLabel:     true,
-		xAxisLabelFunc:     func(i int) string { return strconv.Itoa(i) },
+		xAxisLabelFunc:     strconv.Itoa,
 		drawYAxisLabel:     true,
 		yAxisLabelDataType: PlotYAxisLabelDataFloat,
 		yAxisAutoScaleMin:  false,
