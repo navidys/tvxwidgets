@@ -23,7 +23,6 @@ func main() {
 	period := 2 * math.Pi
 	horizontalStretchFactor := 1.0
 	verticalStretchFactor := 1.0
-	//xOffset := period / 4
 	xOffset := 0.0
 	yOffset := 0.0
 
@@ -34,7 +33,7 @@ func main() {
 	xAxisZoomFactor := 3.0
 	yAxisZoomFactor := 1.0
 	xAxisShift := 0.0
-	yAxisShift := 1.0
+	yAxisShift := 0.0
 
 	// xFunc1 defines the x values that should be used for each vertical "slot" in the graph.
 	xFunc1 := func(i int) float64 {
@@ -95,7 +94,7 @@ func main() {
 	layout.AddItem(firstRow, 0, 1, false)
 	layout.SetRect(0, 0, 100, 30)
 
-	animate := false
+	animate := true
 
 	rotateDataContinuously := func() {
 		tick := time.NewTicker(100 * time.Millisecond)
