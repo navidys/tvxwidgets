@@ -298,6 +298,7 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 	// determine the width needed for the largest label
 	maxXAxisLabelWidth := 0
 	for _, d := range plot.data {
+
 		for i := range d {
 			label := plot.xAxisLabelFunc(i)
 			labelMap[i] = label
@@ -324,6 +325,7 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 	// stopping when there is no more space
 	lastUsedLabelEnd := math.MinInt
 	initialOffset := xAxisAreaStartX
+
 	for i := 0; i < maxDataPoints; i++ {
 		labelStart := labelStartMap[i]
 		if labelStart < lastUsedLabelEnd {
@@ -333,6 +335,7 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 
 		rawLabel := labelMap[i]
 		labelWithGap := rawLabel
+
 		if i == 0 {
 			labelWithGap += strings.Repeat(gapRune, plotXAxisLabelsGap/2)
 		} else {
@@ -341,6 +344,7 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 
 		expectedLabelWidth := len(labelWithGap)
 		remainingWidth := xAxisAvailableWidth - labelStart
+
 		if expectedLabelWidth > remainingWidth {
 			// the label would be too long to fit in the remaining space
 			if expectedLabelWidth-1 <= remainingWidth {
