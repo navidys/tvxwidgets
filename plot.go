@@ -51,8 +51,11 @@ type brailleCell struct {
 // Plot represents a plot primitive used for different charts.
 type Plot struct {
 	*tview.Box
-	data               [][]float64
-	maxVal             float64
+	data [][]float64
+	// maxVal is the maximum y-axis (vertical) value found in any of the lines in the data set.
+	maxVal float64
+	// minVal is the minimum y-axis (vertical) value found in any of the lines in the data set.
+	minVal             float64
 	marker             Marker
 	ptype              PlotType
 	dotMarkerRune      rune
@@ -63,6 +66,8 @@ type Plot struct {
 	drawXAxisLabel     bool
 	drawYAxisLabel     bool
 	yAxisLabelDataType PlotYAxisLabelDataType
+	yAxisAutoScaleMin  bool
+	yAxisAutoScaleMax  bool
 	brailleCellMap     map[image.Point]brailleCell
 	mu                 sync.Mutex
 }
@@ -80,6 +85,8 @@ func NewPlot() *Plot {
 		drawXAxisLabel:     true,
 		drawYAxisLabel:     true,
 		yAxisLabelDataType: PlotYAxisLabelDataFloat,
+		yAxisAutoScaleMin:  false,
+		yAxisAutoScaleMax:  true,
 		lineColors: []tcell.Color{
 			tcell.ColorSteelBlue,
 		},
@@ -113,6 +120,16 @@ func (plot *Plot) SetLineColor(color []tcell.Color) {
 // SetYAxisLabelDataType sets Y axis label data type (integer or float).
 func (plot *Plot) SetYAxisLabelDataType(dataType PlotYAxisLabelDataType) {
 	plot.yAxisLabelDataType = dataType
+}
+
+// SetYAxisAutoScaleMin enables YAxis min value autoscale.
+func (plot *Plot) SetYAxisAutoScaleMin(autoScale bool) {
+	plot.yAxisAutoScaleMin = autoScale
+}
+
+// SetYAxisAutoScaleMax enables YAxix max value autoscale.
+func (plot *Plot) SetYAxisAutoScaleMax(autoScale bool) {
+	plot.yAxisAutoScaleMax = autoScale
 }
 
 // SetAxesColor sets axes x and y lines color.
@@ -157,7 +174,27 @@ func (plot *Plot) SetData(data [][]float64) {
 
 	plot.brailleCellMap = make(map[image.Point]brailleCell)
 	plot.data = data
-	plot.maxVal = getMaxFloat64From2dSlice(data)
+
+	if plot.yAxisAutoScaleMax {
+		plot.maxVal = getMaxFloat64From2dSlice(data)
+	}
+
+	if plot.yAxisAutoScaleMin {
+		plot.minVal = getMinFloat64From2dSlice(data)
+	}
+}
+
+func (plot *Plot) SetMaxVal(maxVal float64) {
+	plot.maxVal = maxVal
+}
+
+func (plot *Plot) SetMinVal(minVal float64) {
+	plot.minVal = minVal
+}
+
+func (plot *Plot) SetYRange(minVal float64, maxVal float64) {
+	plot.minVal = minVal
+	plot.maxVal = maxVal
 }
 
 // SetDotMarkerRune sets dot marker rune.
@@ -253,15 +290,16 @@ func (plot *Plot) drawXAxisLabelToScreen(
 }
 
 func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWidth int, x int, y int, height int) {
-	verticalScale := plot.maxVal / float64(height-plotXAxisLabelsHeight-1)
+	verticalOffset := plot.minVal
+	verticalScale := (plot.maxVal - plot.minVal) / float64(height-plotXAxisLabelsHeight-1)
 	previousLabel := ""
 
 	for i := 0; i*(plotYAxisLabelsGap+1) < height-1; i++ {
 		var label string
 		if plot.yAxisLabelDataType == PlotYAxisLabelDataFloat {
-			label = fmt.Sprintf("%.2f", float64(i)*verticalScale*(plotYAxisLabelsGap+1))
+			label = fmt.Sprintf("%.2f", float64(i)*verticalScale*(plotYAxisLabelsGap+1)+verticalOffset)
 		} else {
-			label = strconv.Itoa(int(float64(i) * verticalScale * (plotYAxisLabelsGap + 1)))
+			label = strconv.Itoa(int(float64(i)*verticalScale*(plotYAxisLabelsGap+1) + verticalOffset))
 		}
 
 		// Prevent same label being shown twice.
@@ -281,10 +319,11 @@ func (plot *Plot) drawYAxisLabelToScreen(screen tcell.Screen, plotYAxisLabelsWid
 	}
 }
 
-//nolint:cyclop
+//nolint:cyclop,gocognit
 func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 	x, y, width, height := plot.GetPlotRect()
 	chartData := plot.getData()
+	verticalOffset := -plot.minVal
 
 	switch plot.ptype {
 	case PlotTypeLineChart:
@@ -297,7 +336,10 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 					continue
 				}
 
-				lheight := int((val / plot.maxVal) * float64(height-1))
+				lheight := int(((val + verticalOffset) / plot.maxVal) * float64(height-1))
+				if lheight > height {
+					continue
+				}
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
 					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-1-lheight, plot.dotMarkerRune, style)
@@ -314,7 +356,10 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 					continue
 				}
 
-				lheight := int((val / plot.maxVal) * float64(height-1))
+				lheight := int(((val + verticalOffset) / plot.maxVal) * float64(height-1))
+				if lheight > height {
+					continue
+				}
 
 				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
 					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-1-lheight, plot.dotMarkerRune, style)
@@ -342,6 +387,19 @@ func calcDataPointHeight(val, maxVal, minVal float64, height int) int {
 	return int(((val - minVal) / (maxVal - minVal)) * float64(height-1))
 }
 
+func calcDataPointHeightIfInBounds(val float64, maxVal float64, minVal float64, height int) (int, bool) {
+	if math.IsNaN(val) {
+		return 0, false
+	}
+
+	result := calcDataPointHeight(val, maxVal, minVal, height)
+	if (val > maxVal) || (val < minVal) || (result > height) {
+		return result, false
+	}
+
+	return result, true
+}
+
 func (plot *Plot) calcBrailleLines() {
 	x, y, _, height := plot.GetPlotRect()
 	chartData := plot.getData()
@@ -351,58 +409,56 @@ func (plot *Plot) calcBrailleLines() {
 			continue
 		}
 
-		lastValWasNaN := math.IsNaN(line[0])
 		previousHeight := 0
+		lastValWasOk := false
 
-		if !lastValWasNaN {
-			previousHeight = calcDataPointHeight(line[0], plot.maxVal, 0, height)
-		}
+		for j, val := range line {
+			lheight, currentValIsOk := calcDataPointHeightIfInBounds(val, plot.maxVal, plot.minVal, height)
 
-		for j, val := range line[1:] {
-			if math.IsNaN(val) {
-				if !lastValWasNaN {
-					// last data point was single valid data point
-					plot.setBraillePoint(
-						image.Pt(
-							(x+(j*plotHorizontalScale))*2, //nolint:gomnd
-							(y+height-previousHeight-1)*4, //nolint:gomnd
-						),
-						plot.lineColors[i],
-					)
-				}
-
-				lastValWasNaN = true
-
+			if !lastValWasOk && !currentValIsOk {
+				// nothing valid to draw, skip to next data point
 				continue
 			}
 
-			if lastValWasNaN {
-				previousHeight = calcDataPointHeight(val, plot.maxVal, 0, height)
-				lastValWasNaN = false
-
-				continue
+			if !lastValWasOk { //nolint:gocritic
+				// current data point is single valid data point, draw it individually
+				plot.setBraillePoint(
+					calcBraillePoint(x, j+1, y, height, lheight),
+					plot.lineColors[i],
+				)
+			} else if !currentValIsOk {
+				// last data point was single valid data point, draw it individually
+				plot.setBraillePoint(
+					calcBraillePoint(x, j, y, height, previousHeight),
+					plot.lineColors[i],
+				)
+			} else {
+				// we have two valid data points, draw a line between them
+				plot.setBrailleLine(
+					calcBraillePoint(x, j, y, height, previousHeight),
+					calcBraillePoint(x, j+1, y, height, lheight),
+					plot.lineColors[i],
+				)
 			}
 
-			lheight := calcDataPointHeight(val, plot.maxVal, 0, height)
-
-			plot.setBrailleLine(
-				image.Pt(
-					(x+(j*plotHorizontalScale))*2, //nolint:gomnd
-					(y+height-previousHeight-1)*4, //nolint:gomnd
-				),
-				image.Pt(
-					(x+((j+1)*plotHorizontalScale))*2, //nolint:gomnd
-					(y+height-lheight-1)*4,            //nolint:gomnd
-				),
-				plot.lineColors[i],
-			)
-
+			lastValWasOk = currentValIsOk
 			previousHeight = lheight
 		}
 	}
 }
 
+func calcBraillePoint(x, j, y, maxY, height int) image.Point {
+	return image.Pt(
+		(x+(j*plotHorizontalScale))*2, //nolint:gomnd
+		(y+maxY-height-1)*4,           //nolint:gomnd
+	)
+}
+
 func (plot *Plot) setBraillePoint(p image.Point, color tcell.Color) {
+	if p.X < 0 || p.Y < 0 {
+		return
+	}
+
 	point := image.Pt(p.X/2, p.Y/4) //nolint:gomnd
 	plot.brailleCellMap[point] = brailleCell{
 		plot.brailleCellMap[point].cRune | brailleRune[p.Y%4][p.X%2],
