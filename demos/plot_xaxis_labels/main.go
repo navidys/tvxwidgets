@@ -101,18 +101,24 @@ func main() {
 	layout.AddItem(firstRow, 0, 1, false)
 	layout.SetRect(0, 0, 100, 30)
 
+	animate := true
+
 	rotateDataContinuously := func() {
 		tick := time.NewTicker(100 * time.Millisecond)
 		go func() {
-			initialOffsetX := xOffset
+			initialxAxisShift := xAxisShift
 			for {
 				select {
 				case <-tick.C:
-					//xOffset = xOffset + 0.1
-					if xOffset >= initialOffsetX+period {
-						xOffset = initialOffsetX
+					if !animate {
+						continue
 					}
-					data := computeDataArray()
+
+					xAxisShift = xAxisShift + 0.1
+					if xAxisShift >= initialxAxisShift+period {
+						xAxisShift = initialxAxisShift
+					}
+					data = computeDataArray()
 					bmLineChart.SetData(data)
 
 					app.Draw()
@@ -123,7 +129,12 @@ func main() {
 
 	go rotateDataContinuously()
 
-	if err := app.SetRoot(layout, false).EnableMouse(true).Run(); err != nil {
+	if err := app.SetRoot(layout, false).EnableMouse(true).SetMouseCapture(func(event *tcell.EventMouse, action tview.MouseAction) (*tcell.EventMouse, tview.MouseAction) {
+		if action == tview.MouseLeftClick {
+			animate = !animate
+		}
+		return event, action
+	}).Run(); err != nil {
 		panic(err)
 	}
 }
