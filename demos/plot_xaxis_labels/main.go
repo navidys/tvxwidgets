@@ -34,14 +34,12 @@ func main() {
 	// Note: There is no way to only zoom the visible range on the x-axis, so we
 	// have to zoom the actual data values instead (see xAxisZoomFactor).
 	xAxisZoomFactor := 3.0
-	// TODO: needs custom min/max values for y-axis, coming soon TM in #68
-	//yAxisZoomFactor := 1.0
+	yAxisZoomFactor := 1.0
 
 	// Note: There is no way to only shift the visible range on the x-axis, so we
 	// have to shift both the actual data values and the labels instead (see xOffset and ).
 	xAxisShift := -period / 4
-	// TODO: enable when #68 is done
-	//yAxisShift := 0.0
+	yAxisShift := 0.0
 
 	// xFunc1 defines the x values that should be used for each vertical "slot" in the graph.
 	xFunc1 := func(i int) float64 {
@@ -86,13 +84,12 @@ func main() {
 	})
 	bmLineChart.SetMarker(tvxwidgets.PlotMarkerBraille)
 	bmLineChart.SetXAxisLabelFunc(xLabelFunc1)
-	// TODO: enable when #68 is done
-	//bmLineChart.SetYAxisAutoScaleMin(false)
-	//bmLineChart.SetYAxisAutoScaleMax(false)
-	//bmLineChart.SetYRange(
-	//	(-1+yOffset+yAxisShift)/yAxisZoomFactor,
-	//	(1+yOffset+yAxisShift)/yAxisZoomFactor,
-	//)
+	bmLineChart.SetYAxisAutoScaleMin(false)
+	bmLineChart.SetYAxisAutoScaleMax(false)
+	bmLineChart.SetYRange(
+		(-1+yOffset+yAxisShift)/yAxisZoomFactor,
+		(1+yOffset+yAxisShift)/yAxisZoomFactor,
+	)
 	bmLineChart.SetData(data)
 
 	firstRow := tview.NewFlex().SetDirection(tview.FlexColumn)
