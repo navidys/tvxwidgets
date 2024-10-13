@@ -20,11 +20,10 @@ func main() {
 	// and how you might adapt this code to plot other functions.
 
 	period := 2 * math.Pi
-	xAxisStrechFactor := 1.0
-	yAxisStretchFactor := 1.0
-	//xOffset := -(period)*1 - period/4
-	xOffset := -period / 4
-	//xOffset := 0.0
+	horizontalStrechFactor := 1.0
+	verticalStretchFactor := 1.0
+	xOffset := 0.0
+	//xOffset = 0.0
 	yOffset := 1.0
 
 	// These values influence which part of the curve is shown in
@@ -32,22 +31,35 @@ func main() {
 
 	// Note: There is no way to only zoom the visible range on the x-axis, so we
 	// have to zoom the actual data values instead (see xAxisZoomFactor).
-	xAxisZoomFactor := 10.0
+	xAxisZoomFactor := 3.0
 	// TODO: needs custom min/max values for y-axis, coming soon TM in #68
 	//yAxisZoomFactor := 1.0
 
 	// Note: There is no way to only shift the visible range on the x-axis, so we
-	// have to shift the actual data values instead (see xOffset).
-	//xAxisShift := xOffset
+	// have to shift both the actual data values and the labels instead (see xOffset and ).
+	xAxisShift := -period / 4
+	// TODO: enable when #68 is done
 	//yAxisShift := 0.0
 
+	// xFunc1 defines the x values that should be used for each vertical "slot" in the graph.
 	xFunc1 := func(i int) float64 {
-		return (((float64(i)) / xAxisZoomFactor) * math.Pi) + xOffset
+		return (float64(i) / xAxisZoomFactor) + xOffset + xAxisShift
 	}
+	// yFunc1 defines the y values that result from a given input value x (this is the actual function).
 	yFunc1 := func(x float64) float64 {
-		return (math.Sin((x+xOffset)/xAxisStrechFactor) + yOffset) * yAxisStretchFactor
+		return (math.Sin((x)/horizontalStrechFactor) + yOffset) * verticalStretchFactor
 	}
 
+	// xLabelFunc1 defines a label for each vertical "slot". Which labels are shown is determined automatically
+	// based on the available space.
+	xLabelFunc1 := func(i int) string {
+		xVal := xFunc1(i)
+		labelVal := xVal + xOffset
+		label := fmt.Sprintf("%.1f", labelVal)
+		return label
+	}
+
+	// computeDataArray computes the y values for n vertical slots based on the definitions above.
 	computeDataArray := func() [][]float64 {
 		n := 150
 		data := make([][]float64, 1)
@@ -71,10 +83,7 @@ func main() {
 		tcell.ColorGreen,
 	})
 	bmLineChart.SetMarker(tvxwidgets.PlotMarkerBraille)
-	bmLineChart.SetXAxisLabelFunc(func(i int) string {
-		label := fmt.Sprintf("%.1f", xFunc1(i))
-		return label
-	})
+	bmLineChart.SetXAxisLabelFunc(xLabelFunc1)
 	// TODO: enable when #68 is done
 	//bmLineChart.SetYAxisAutoScaleMin(false)
 	//bmLineChart.SetYAxisAutoScaleMax(false)
