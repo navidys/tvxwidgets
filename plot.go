@@ -345,10 +345,10 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 			// the label would be too long to fit in the remaining space
 			if expectedLabelWidth-1 <= remainingWidth {
 				// if we omit the last gap, it fits, so we draw that before stopping
-				expectedLabelWidth--
 				labelWithoutGap := labelWithGap[:len(labelWithGap)-1]
 				plot.printXAxisLabel(screen, labelWithoutGap, initialOffset+labelStart, y+height-plotXAxisLabelsHeight)
 			}
+
 			break
 		}
 
