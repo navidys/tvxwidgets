@@ -13,6 +13,7 @@ func main() {
 
 	app := tview.NewApplication()
 
+	// >>> Data Function <<<
 	// With these values, the curve will start with a value of 0 and reach a
 	// high point of 2 at x = 3.14 (Pi) and then return to 0 at x = 6.28 (2*Pi).
 
@@ -20,12 +21,13 @@ func main() {
 	// and how you might adapt this code to plot other functions.
 
 	period := 2 * math.Pi
-	horizontalStrechFactor := 1.0
+	horizontalStretchFactor := 1.0
 	verticalStretchFactor := 1.0
 	xOffset := 0.0
 	//xOffset = 0.0
 	yOffset := 1.0
 
+	// >>> Graph View Controls <<<
 	// These values influence which part of the curve is shown in
 	// what "zoom level".
 
@@ -47,7 +49,7 @@ func main() {
 	}
 	// yFunc1 defines the y values that result from a given input value x (this is the actual function).
 	yFunc1 := func(x float64) float64 {
-		return (math.Sin((x)/horizontalStrechFactor) + yOffset) * verticalStretchFactor
+		return (math.Sin((x)/horizontalStretchFactor) + yOffset) * verticalStretchFactor
 	}
 
 	// xLabelFunc1 defines a label for each vertical "slot". Which labels are shown is determined automatically
