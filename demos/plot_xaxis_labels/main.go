@@ -115,7 +115,7 @@ func main() {
 					}
 
 					xAxisShift = xAxisShift + 0.1
-					if xAxisShift >= initialxAxisShift+period {
+					if xAxisShift >= initialxAxisShift+period*4 {
 						xAxisShift = initialxAxisShift
 					}
 					data = computeDataArray()
