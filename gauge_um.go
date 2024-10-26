@@ -97,8 +97,8 @@ func (g *UtilModeGauge) Draw(screen tcell.Screen) {
 	labelWidth := len(g.label)
 	barWidth := width - labelPCWidth - labelWidth
 
-	for i := 0; i < barWidth; i++ {
-		for j := 0; j < height; j++ {
+	for i := range barWidth {
+		for j := range height {
 			value := float64(i * 100 / barWidth)
 			color := g.getBarColor(value)
 

@@ -59,7 +59,7 @@ func (sl *Sparkline) Draw(screen tcell.Screen) {
 
 		style := tcell.StyleDefault.Background(sl.GetBackgroundColor()).Foreground(sl.lineColor)
 
-		for j := 0; j < dHeight; j++ {
+		for j := range dHeight {
 			tview.PrintJoinedSemigraphics(screen, i+x, y-1+height-j, sparkChar, style)
 		}
 

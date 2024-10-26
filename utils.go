@@ -78,7 +78,7 @@ func getMaxFloat64From2dSlice(slices [][]float64) float64 {
 	}
 
 	var (
-		max       float64
+		maxValue  float64
 		maxIsInit bool
 	)
 
@@ -90,18 +90,18 @@ func getMaxFloat64From2dSlice(slices [][]float64) float64 {
 
 			if !maxIsInit {
 				maxIsInit = true
-				max = val
+				maxValue = val
 
 				continue
 			}
 
-			if val > max {
-				max = val
+			if val > maxValue {
+				maxValue = val
 			}
 		}
 	}
 
-	return max
+	return maxValue
 }
 
 func getMinFloat64From2dSlice(slices [][]float64) float64 {
@@ -110,7 +110,7 @@ func getMinFloat64From2dSlice(slices [][]float64) float64 {
 	}
 
 	var (
-		min       float64
+		minValue  float64
 		minIsInit bool
 	)
 
@@ -122,18 +122,18 @@ func getMinFloat64From2dSlice(slices [][]float64) float64 {
 
 			if !minIsInit {
 				minIsInit = true
-				min = val
+				minValue = val
 
 				continue
 			}
 
-			if val < min {
-				min = val
+			if val < minValue {
+				minValue = val
 			}
 		}
 	}
 
-	return min
+	return minValue
 }
 
 // returns max values in float64 slices.
@@ -142,19 +142,19 @@ func getMaxFloat64FromSlice(slice []float64) float64 {
 		return 0
 	}
 
-	max := -1.0
+	maxValue := -1.0
 
-	for i := 0; i < len(slice); i++ {
+	for i := range slice {
 		if math.IsNaN(slice[i]) {
 			continue
 		}
 
-		if slice[i] > max {
-			max = slice[i]
+		if slice[i] > maxValue {
+			maxValue = slice[i]
 		}
 	}
 
-	return max
+	return maxValue
 }
 
 func absInt(x int) int {
@@ -167,11 +167,11 @@ func absInt(x int) int {
 
 func drawLine(screen tcell.Screen, startX int, startY int, length int, mode drawLineMode, style tcell.Style) {
 	if mode == horizontalLine {
-		for i := 0; i < length; i++ {
+		for i := range length {
 			tview.PrintJoinedSemigraphics(screen, startX+i, startY, tview.BoxDrawingsLightTripleDashHorizontal, style)
 		}
 	} else if mode == verticalLine {
-		for i := 0; i < length; i++ {
+		for i := range length {
 			tview.PrintJoinedSemigraphics(screen, startX, startY+i, tview.BoxDrawingsLightTripleDashVertical, style)
 		}
 	}
