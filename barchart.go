@@ -67,8 +67,8 @@ func (c *BarChart) Draw(screen tcell.Screen) { //nolint:funlen,cyclop
 	x, y, width, height := c.Box.GetInnerRect()
 
 	maxValY := y + 1
-	xAxisStartY := y + height - 2 //nolint:gomnd
-	barStartY := y + height - 3   //nolint:gomnd
+	xAxisStartY := y + height - 2 //nolint:mnd
+	barStartY := y + height - 3   //nolint:mnd
 	borderPadding := 0
 
 	if c.hasBorder {
@@ -108,7 +108,7 @@ func (c *BarChart) Draw(screen tcell.Screen) { //nolint:funlen,cyclop
 	tview.PrintJoinedSemigraphics(screen, x+maxValLenght-1, xAxisStartY, '0', axesLabelStyle)
 
 	mxValRune := []rune(maxValueSr)
-	for i := 0; i < len(mxValRune); i++ {
+	for i := range mxValRune {
 		tview.PrintJoinedSemigraphics(screen, x+borderPadding+i, maxValY, mxValRune[i], axesLabelStyle)
 	}
 
@@ -123,15 +123,15 @@ func (c *BarChart) Draw(screen tcell.Screen) { //nolint:funlen,cyclop
 		}
 		// set labels
 		r := []rune(item.label)
-		for j := 0; j < len(r); j++ {
+		for j := range r {
 			tview.PrintJoinedSemigraphics(screen, startX+j, labelY, r[j], axesLabelStyle)
 		}
 		// bar style
 		bStyle := tcell.StyleDefault.Background(c.GetBackgroundColor()).Foreground(item.color)
 		barHeight := c.getHeight(valueMaxHeight, item.value)
 
-		for k := 0; k < barHeight; k++ {
-			for l := 0; l < c.barWidth; l++ {
+		for k := range barHeight {
+			for l := range c.barWidth {
 				tview.PrintJoinedSemigraphics(screen, startX+l, barStartY-k, fullBlockRune, bStyle)
 			}
 		}
@@ -139,7 +139,7 @@ func (c *BarChart) Draw(screen tcell.Screen) { //nolint:funlen,cyclop
 		vSt := strconv.Itoa(item.value)
 		vRune := []rune(vSt)
 
-		for i := 0; i < len(vRune); i++ {
+		for i := range vRune {
 			tview.PrintJoinedSemigraphics(screen, startX+i, barStartY-barHeight, vRune[i], bStyle)
 		}
 
@@ -170,8 +170,8 @@ func (c *BarChart) SetRect(x, y, width, height int) {
 }
 
 // SetMaxValue sets maximum value of bars.
-func (c *BarChart) SetMaxValue(max int) {
-	c.maxVal = max
+func (c *BarChart) SetMaxValue(maxValue int) {
+	c.maxVal = maxValue
 }
 
 // SetAxesColor sets axes x and y lines color.

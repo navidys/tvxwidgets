@@ -34,7 +34,7 @@ func (g *ActivityModeGauge) Draw(screen tcell.Screen) {
 	x, y, width, height := g.Box.GetInnerRect()
 	tickStr := g.tickStr(width)
 
-	for i := 0; i < height; i++ {
+	for i := range height {
 		tview.Print(screen, tickStr, x, y+i, width, tview.AlignLeft, g.pgBgColor)
 	}
 }
@@ -73,27 +73,27 @@ func (g *ActivityModeGauge) Reset() {
 	g.counter = 0
 }
 
-func (g *ActivityModeGauge) tickStr(max int) string {
+func (g *ActivityModeGauge) tickStr(maxCount int) string {
 	var (
 		prgHeadStr string
 		prgEndStr  string
 		prgStr     string
 	)
 
-	if g.counter >= max-4 {
+	if g.counter >= maxCount-4 {
 		g.counter = 0
 	}
 
 	hWidth := 0
 
-	for i := 0; i < g.counter; i++ {
+	for range g.counter {
 		prgHeadStr += fmt.Sprintf("[%s::]%s", getColorName(tview.Styles.PrimitiveBackgroundColor), prgCell)
 		hWidth++
 	}
 
 	prgStr = prgCell + prgCell + prgCell + prgCell
 
-	for i := 0; i < max+hWidth+4; i++ {
+	for range maxCount + hWidth + 4 {
 		prgEndStr += fmt.Sprintf("[%s::]%s", getColorName(tview.Styles.PrimitiveBackgroundColor), prgCell)
 	}
 

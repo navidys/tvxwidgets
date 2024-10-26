@@ -314,12 +314,12 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 	for i, label := range labelMap {
 		expectedLabelWidth := len(label)
 		if i == 0 {
-			expectedLabelWidth += plotXAxisLabelsGap / 2 //nolint:gomnd
+			expectedLabelWidth += plotXAxisLabelsGap / 2 //nolint:mnd
 		} else {
 			expectedLabelWidth += plotXAxisLabelsGap
 		}
 
-		currentLabelStart := i - int(math.Round(float64(expectedLabelWidth)/2)) //nolint:gomnd
+		currentLabelStart := i - int(math.Round(float64(expectedLabelWidth)/2)) //nolint:mnd
 		labelStartMap[i] = currentLabelStart
 	}
 
@@ -328,7 +328,7 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 	lastUsedLabelEnd := math.MinInt
 	initialOffset := xAxisAreaStartX
 
-	for i := 0; i < maxDataPoints; i++ {
+	for i := range maxDataPoints {
 		labelStart := labelStartMap[i]
 		if labelStart < lastUsedLabelEnd {
 			// the label would overlap with the previous label
@@ -339,9 +339,9 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 		labelWithGap := rawLabel
 
 		if i == 0 {
-			labelWithGap += strings.Repeat(gapRune, plotXAxisLabelsGap/2) //nolint:gomnd
+			labelWithGap += strings.Repeat(gapRune, plotXAxisLabelsGap/2) //nolint:mnd
 		} else {
-			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + labelWithGap + strings.Repeat(gapRune, plotXAxisLabelsGap/2) //nolint:lll,gomnd
+			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + labelWithGap + strings.Repeat(gapRune, plotXAxisLabelsGap/2) //nolint:lll,mnd
 		}
 
 		expectedLabelWidth := len(labelWithGap)
@@ -391,7 +391,7 @@ func (plot *Plot) drawYAxisLabelsToScreen(screen tcell.Screen, plotYAxisLabelsWi
 		tview.Print(screen,
 			label,
 			x,
-			y+height-(i*(plotYAxisLabelsGap+1))-2, //nolint:gomnd
+			y+height-(i*(plotYAxisLabelsGap+1))-2, //nolint:mnd
 			plotYAxisLabelsWidth,
 			tview.AlignLeft, plot.axesLabelColor)
 	}
@@ -527,8 +527,8 @@ func (plot *Plot) calcBrailleLines() {
 
 func calcBraillePoint(x, j, y, maxY, height int) image.Point {
 	return image.Pt(
-		(x+(j*plotHorizontalScale))*2, //nolint:gomnd
-		(y+maxY-height-1)*4,           //nolint:gomnd
+		(x+(j*plotHorizontalScale))*2, //nolint:mnd
+		(y+maxY-height-1)*4,           //nolint:mnd
 	)
 }
 
@@ -537,7 +537,7 @@ func (plot *Plot) setBraillePoint(p image.Point, color tcell.Color) {
 		return
 	}
 
-	point := image.Pt(p.X/2, p.Y/4) //nolint:gomnd
+	point := image.Pt(p.X/2, p.Y/4) //nolint:mnd
 	plot.brailleCellMap[point] = brailleCell{
 		plot.brailleCellMap[point].cRune | brailleRune[p.Y%4][p.X%2],
 		color,
