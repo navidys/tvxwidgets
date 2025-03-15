@@ -1,6 +1,6 @@
 module github.com/navidys/tvxwidgets
 
-go 1.22.6
+go 1.23.0
 
 require (
 	github.com/gdamore/tcell/v2 v2.8.1

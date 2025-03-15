@@ -8,9 +8,7 @@ linters:
     - exhaustruct
     - depguard
     # deprecated
-    - gomnd
-    - execinquery
-    - exportloopref
+    - tenv
     - rowserrcheck
     - wastedassign
 linters-settings:
