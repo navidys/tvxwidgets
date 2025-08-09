@@ -91,8 +91,8 @@ func (g *UtilModeGauge) GetValue() float64 {
 
 // Draw draws this primitive onto the screen.
 func (g *UtilModeGauge) Draw(screen tcell.Screen) {
-	g.Box.DrawForSubclass(screen, g)
-	x, y, width, height := g.Box.GetInnerRect()
+	g.DrawForSubclass(screen, g)
+	x, y, width, height := g.GetInnerRect()
 	labelPCWidth := 7
 	labelWidth := len(g.label)
 	barWidth := width - labelPCWidth - labelWidth

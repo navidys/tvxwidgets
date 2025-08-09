@@ -1,26 +1,26 @@
+version: "2"
 run:
-  timeout: 10m
-  deadline: 5m
-linters:
-  enable-all: true
-  disable:
-    - varnamelen
-    - exhaustruct
-    - depguard
-    # deprecated
-    - tenv
-    - rowserrcheck
-    - wastedassign
-linters-settings:
-  errcheck:
-    check-blank: false
-    exclude-functions:
-      - fmt:.*
-  nolintlint:
-    require-specific: true
+  modules-download-mode: readonly
 
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: disable
+
+linters:
+  settings:
+    errcheck:
+      check-blank: false
+      exclude-functions:
+        - fmt:.*
+    nolintlint:
+      require-specific: true
+  exclusions:
+    paths:
+      - demos
+      - ".*_test.go"
 issues:
-  exclude-dirs:
-    - demos
-  exclude-files:
-    - ".*_test.go"
+  max-issues-per-linter: 0
+  max-same-issues: 0

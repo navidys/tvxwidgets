@@ -28,9 +28,9 @@ func NewSparkline() *Sparkline {
 
 // Draw draws this primitive onto the screen.
 func (sl *Sparkline) Draw(screen tcell.Screen) {
-	sl.Box.DrawForSubclass(screen, sl)
+	sl.DrawForSubclass(screen, sl)
 
-	x, y, width, height := sl.Box.GetInnerRect()
+	x, y, width, height := sl.GetInnerRect()
 	barHeight := height
 
 	// print label

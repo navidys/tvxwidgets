@@ -122,8 +122,8 @@ func (d *MessageDialog) SetTextColor(color tcell.Color) {
 
 // Draw draws this primitive onto the screen.
 func (d *MessageDialog) Draw(screen tcell.Screen) {
-	d.Box.DrawForSubclass(screen, d)
-	x, y, width, height := d.Box.GetInnerRect()
+	d.DrawForSubclass(screen, d)
+	x, y, width, height := d.GetInnerRect()
 	d.layout.SetRect(x, y, width, height)
 	d.layout.Draw(screen)
 }
@@ -196,7 +196,7 @@ func (d *MessageDialog) setColor() {
 
 func (d *MessageDialog) setRect() {
 	maxHeight := d.height
-	maxWidth := d.width //nolint:ifshort
+	maxWidth := d.width
 	messageHeight := len(strings.Split(d.message, "\n"))
 	messageWidth := getMessageWidth(d.message)
 
