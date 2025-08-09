@@ -30,8 +30,8 @@ func NewActivityModeGauge() *ActivityModeGauge {
 
 // Draw draws this primitive onto the screen.
 func (g *ActivityModeGauge) Draw(screen tcell.Screen) {
-	g.Box.DrawForSubclass(screen, g)
-	x, y, width, height := g.Box.GetInnerRect()
+	g.DrawForSubclass(screen, g)
+	x, y, width, height := g.GetInnerRect()
 	tickStr := g.tickStr(width)
 
 	for i := range height {

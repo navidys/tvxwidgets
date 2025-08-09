@@ -63,8 +63,8 @@ func NewSpinner() *Spinner {
 
 // Draw draws this primitive onto the screen.
 func (s *Spinner) Draw(screen tcell.Screen) {
-	s.Box.DrawForSubclass(screen, s)
-	x, y, width, _ := s.Box.GetInnerRect()
+	s.DrawForSubclass(screen, s)
+	x, y, width, _ := s.GetInnerRect()
 	tview.Print(screen, s.getCurrentFrame(), x, y, width, tview.AlignLeft, tcell.ColorDefault)
 }
 

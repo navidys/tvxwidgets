@@ -100,7 +100,7 @@ func NewPlot() *Plot {
 
 // Draw draws this primitive onto the screen.
 func (plot *Plot) Draw(screen tcell.Screen) {
-	plot.Box.DrawForSubclass(screen, plot)
+	plot.DrawForSubclass(screen, plot)
 
 	switch plot.marker {
 	case PlotMarkerDot:
@@ -219,7 +219,7 @@ func (plot *Plot) getYAxisLabelsWidth() int {
 
 // GetPlotRect returns the rect for the inner part of the plot, ie not including axes.
 func (plot *Plot) GetPlotRect() (int, int, int, int) {
-	x, y, width, height := plot.Box.GetInnerRect()
+	x, y, width, height := plot.GetInnerRect()
 	plotYAxisLabelsWidth := plot.getYAxisLabelsWidth()
 
 	if plot.drawAxes {
@@ -247,7 +247,7 @@ func (plot *Plot) drawAxesToScreen(screen tcell.Screen) {
 		return
 	}
 
-	x, y, width, height := plot.Box.GetInnerRect()
+	x, y, width, height := plot.GetInnerRect()
 	plotYAxisLabelsWidth := plot.getYAxisLabelsWidth()
 
 	axesStyle := tcell.StyleDefault.Background(plot.GetBackgroundColor()).Foreground(plot.axesColor)

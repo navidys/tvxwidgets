@@ -62,9 +62,9 @@ func (c *BarChart) HasFocus() bool {
 
 // Draw draws this primitive onto the screen.
 func (c *BarChart) Draw(screen tcell.Screen) { //nolint:funlen,cyclop
-	c.Box.DrawForSubclass(screen, c)
+	c.DrawForSubclass(screen, c)
 
-	x, y, width, height := c.Box.GetInnerRect()
+	x, y, width, height := c.GetInnerRect()
 
 	maxValY := y + 1
 	xAxisStartY := y + height - 2 //nolint:mnd
