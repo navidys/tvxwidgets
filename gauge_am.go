@@ -10,6 +10,7 @@ import (
 // ActivityModeGauge represents activity mode gauge permitive.
 type ActivityModeGauge struct {
 	*tview.Box
+
 	// counter value
 	counter int
 
@@ -40,7 +41,7 @@ func (g *ActivityModeGauge) Draw(screen tcell.Screen) {
 }
 
 // Focus is called when this primitive receives focus.
-func (g *ActivityModeGauge) Focus(delegate func(p tview.Primitive)) { //nolint:revive
+func (g *ActivityModeGauge) Focus(delegate func(p tview.Primitive)) {
 }
 
 // HasFocus returns whether or not this primitive has focus.

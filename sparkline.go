@@ -8,7 +8,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-// Spartline represents a sparkline widgets.
+// Sparkline represents a sparkline widgets.
 type Sparkline struct {
 	*tview.Box
 

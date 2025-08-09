@@ -10,6 +10,12 @@ formatters:
     generated: disable
 
 linters:
+  default: all
+  disable:
+    - varnamelen
+    - exhaustruct
+    - depguard
+    - wsl
   settings:
     errcheck:
       check-blank: false
@@ -17,6 +23,10 @@ linters:
         - fmt:.*
     nolintlint:
       require-specific: true
+    revive:
+      rules:
+        - name: package-comments
+          disabled: true
   exclusions:
     paths:
       - demos
