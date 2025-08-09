@@ -23,6 +23,7 @@ type BarChartItem struct {
 // BarChart represents bar chart primitive.
 type BarChart struct {
 	*tview.Box
+
 	// bar items
 	bars []BarChartItem
 	// maximum value of bars

@@ -16,7 +16,6 @@ import (
 type Marker uint
 
 const (
-	// plot marker.
 	PlotMarkerBraille Marker = iota
 	PlotMarkerDot
 )
@@ -54,6 +53,7 @@ type brailleCell struct {
 // Plot represents a plot primitive used for different charts.
 type Plot struct {
 	*tview.Box
+
 	data [][]float64
 	// maxVal is the maximum y-axis (vertical) value found in any of the lines in the data set.
 	maxVal float64
@@ -194,14 +194,17 @@ func (plot *Plot) SetData(data [][]float64) {
 	}
 }
 
+// SetMaxVal sets plot maximum value.
 func (plot *Plot) SetMaxVal(maxVal float64) {
 	plot.maxVal = maxVal
 }
 
+// SetMinVal sets plot minimum value.
 func (plot *Plot) SetMinVal(minVal float64) {
 	plot.minVal = minVal
 }
 
+// SetYRange sets plot Y range.
 func (plot *Plot) SetYRange(minVal float64, maxVal float64) {
 	plot.minVal = minVal
 	plot.maxVal = maxVal
@@ -210,11 +213,6 @@ func (plot *Plot) SetYRange(minVal float64, maxVal float64) {
 // SetDotMarkerRune sets dot marker rune.
 func (plot *Plot) SetDotMarkerRune(r rune) {
 	plot.dotMarkerRune = r
-}
-
-// Figure out the text width necessary to display the largest data value.
-func (plot *Plot) getYAxisLabelsWidth() int {
-	return len(fmt.Sprintf("%.2f", plot.maxVal))
 }
 
 // GetPlotRect returns the rect for the inner part of the plot, ie not including axes.
@@ -232,6 +230,11 @@ func (plot *Plot) GetPlotRect() (int, int, int, int) {
 	}
 
 	return x, y, width, height
+}
+
+// Figure out the text width necessary to display the largest data value.
+func (plot *Plot) getYAxisLabelsWidth() int {
+	return len(fmt.Sprintf("%.2f", plot.maxVal))
 }
 
 func (plot *Plot) getData() [][]float64 {

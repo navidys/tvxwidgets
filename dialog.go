@@ -16,6 +16,7 @@ const (
 // MessageDialog represents message dialog primitive.
 type MessageDialog struct {
 	*tview.Box
+
 	// layout message dialog layout
 	layout *tview.Flex
 	// message view

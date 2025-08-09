@@ -15,6 +15,7 @@ type Spinner struct {
 	styles map[SpinnerStyle][]rune
 }
 
+// SpinnerStyle spinner style.
 type SpinnerStyle int
 
 const (
@@ -85,6 +86,14 @@ func (s *Spinner) SetStyle(style SpinnerStyle) *Spinner {
 	return s
 }
 
+// SetCustomStyle sets a list of runes as custom frames to show as the spinner.
+func (s *Spinner) SetCustomStyle(frames []rune) *Spinner {
+	s.styles[spinnerCustom] = frames
+	s.currentStyle = spinnerCustom
+
+	return s
+}
+
 func (s *Spinner) getCurrentFrame() string {
 	frames := s.styles[s.currentStyle]
 	if len(frames) == 0 {
@@ -92,12 +101,4 @@ func (s *Spinner) getCurrentFrame() string {
 	}
 
 	return string(frames[s.counter%len(frames)])
-}
-
-// SetCustomStyle sets a list of runes as custom frames to show as the spinner.
-func (s *Spinner) SetCustomStyle(frames []rune) *Spinner {
-	s.styles[spinnerCustom] = frames
-	s.currentStyle = spinnerCustom
-
-	return s
 }
