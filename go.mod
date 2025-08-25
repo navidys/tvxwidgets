@@ -3,7 +3,7 @@ module github.com/navidys/tvxwidgets
 go 1.23.3
 
 require (
-	github.com/gdamore/tcell/v2 v2.8.1
+	github.com/gdamore/tcell/v2 v2.9.0
 	github.com/onsi/ginkgo/v2 v2.24.0
 	github.com/onsi/gomega v1.38.0
 	github.com/rivo/tview v0.0.0-20240616192244-23476fa0bab2
