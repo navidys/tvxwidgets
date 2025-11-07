@@ -4,7 +4,7 @@ go 1.24.7
 
 require (
 	github.com/gdamore/tcell/v2 v2.9.0
-	github.com/onsi/ginkgo/v2 v2.27.1
+	github.com/onsi/ginkgo/v2 v2.27.2
 	github.com/onsi/gomega v1.38.2
 	github.com/rivo/tview v0.42.0
 )
@@ -19,7 +19,6 @@ require (
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/net v0.43.0 // indirect
