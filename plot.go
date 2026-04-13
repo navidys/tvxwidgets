@@ -101,6 +101,7 @@ func NewPlot() *Plot {
 // Draw draws this primitive onto the screen.
 func (plot *Plot) Draw(screen tcell.Screen) {
 	plot.DrawForSubclass(screen, plot)
+	plot.drawAxesToScreen(screen)
 
 	switch plot.marker {
 	case PlotMarkerDot:
@@ -108,10 +109,7 @@ func (plot *Plot) Draw(screen tcell.Screen) {
 	case PlotMarkerBraille:
 		plot.drawBrailleMarkerToScreen(screen)
 	}
-
-	plot.drawAxesToScreen(screen)
 }
-
 // SetRect sets rect for this primitive.
 func (plot *Plot) SetRect(x, y, width, height int) {
 	plot.Box.SetRect(x, y, width, height)
@@ -227,6 +225,7 @@ func (plot *Plot) GetPlotRect() (int, int, int, int) {
 	} else {
 		x++
 		width--
+		height--
 	}
 
 	return x, y, width, height
@@ -404,8 +403,6 @@ func (plot *Plot) drawYAxisLabelsToScreen(screen tcell.Screen, plotYAxisLabelsWi
 func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 	x, y, width, height := plot.GetPlotRect()
 	chartData := plot.getData()
-	verticalOffset := -plot.minVal
-
 	switch plot.ptype {
 	case PlotTypeLineChart:
 		for i, line := range chartData {
@@ -417,13 +414,13 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 					continue
 				}
 
-				lheight := int(((val + verticalOffset) / plot.maxVal) * float64(height-1))
+				lheight := calcDataPointHeight(val, plot.maxVal, plot.minVal, height)
 				if lheight > height {
 					continue
 				}
 
-				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
-					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-1-lheight, plot.dotMarkerRune, style)
+				if (x+(j*plotHorizontalScale) < x+width) && (y+height-lheight <= y+height) {
+					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-lheight, plot.dotMarkerRune, style)
 				}
 			}
 		}
@@ -437,13 +434,13 @@ func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 					continue
 				}
 
-				lheight := int(((val + verticalOffset) / plot.maxVal) * float64(height-1))
+				lheight := calcDataPointHeight(val, plot.maxVal, plot.minVal, height)
 				if lheight > height {
 					continue
 				}
 
-				if (x+(j*plotHorizontalScale) < x+width) && (y+height-1-lheight < y+height) {
-					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-1-lheight, plot.dotMarkerRune, style)
+				if (x+(j*plotHorizontalScale) < x+width) && (y+height-lheight <= y+height) {
+					tview.PrintJoinedSemigraphics(screen, x+(j*plotHorizontalScale), y+height-lheight, plot.dotMarkerRune, style)
 				}
 			}
 		}
@@ -458,13 +455,17 @@ func (plot *Plot) drawBrailleMarkerToScreen(screen tcell.Screen) {
 	// print to screen
 	for point, cell := range plot.getBrailleCells() {
 		style := tcell.StyleDefault.Background(plot.GetBackgroundColor()).Foreground(cell.color)
-		if point.X < x+width && point.Y < y+height {
+		if point.X < x+width && point.Y <= y+height {
 			tview.PrintJoinedSemigraphics(screen, point.X, point.Y, cell.cRune, style)
 		}
 	}
 }
 
 func calcDataPointHeight(val, maxVal, minVal float64, height int) int {
+	if maxVal == minVal {
+		return 0
+	}
+
 	return int(((val - minVal) / (maxVal - minVal)) * float64(height-1))
 }
 
@@ -531,7 +532,7 @@ func (plot *Plot) calcBrailleLines() {
 func calcBraillePoint(x, j, y, maxY, height int) image.Point {
 	return image.Pt(
 		(x+(j*plotHorizontalScale))*2, //nolint:mnd
-		(y+maxY-height-1)*4,           //nolint:mnd
+		(y+maxY-height)*4,           //nolint:mnd
 	)
 }
 
