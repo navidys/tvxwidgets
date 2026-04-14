@@ -319,18 +319,21 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 	// overlap with each other
 	for i, label := range labelMap {
 		var expectedLabelWidth int
+
 		var currentLabelStart int
-		switch {
-		case i == 0:
+
+		switch i {
+		case 0:
 			// First label anchors at the data point column with no centering.
 			currentLabelStart = 0
-		case i == maxDataPoints-1:
-			expectedLabelWidth = len(label) + plotXAxisLabelsGap/2
-			currentLabelStart = i - expectedLabelWidth/2
+		case maxDataPoints - 1:
+			expectedLabelWidth = len(label) + plotXAxisLabelsGap/2 //nolint:mnd
+			currentLabelStart = i - expectedLabelWidth/2           //nolint:mnd
 		default:
 			expectedLabelWidth = len(label) + plotXAxisLabelsGap
 			currentLabelStart = i - expectedLabelWidth/2 //nolint:mnd
 		}
+
 		labelStartMap[i] = currentLabelStart
 	}
 
@@ -347,17 +350,19 @@ func (plot *Plot) drawXAxisLabelsToScreen(
 		}
 
 		rawLabel := labelMap[i]
+
 		var labelWithGap string
 
-		switch {
-		case i == 0:
+		switch i {
+		case 0:
 			// First label: no leading gap, trailing gap only.
-			labelWithGap = rawLabel + strings.Repeat(gapRune, plotXAxisLabelsGap/2)
-		case i == maxDataPoints-1:
+			labelWithGap = rawLabel + strings.Repeat(gapRune, plotXAxisLabelsGap/2) //nolint:mnd
+		case maxDataPoints - 1:
 			// Last label: leading gap only, no trailing gap so it doesn't overflow the right edge.
-			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + rawLabel
+			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + rawLabel //nolint:mnd
 		default:
-			labelWithGap = strings.Repeat(gapRune, plotXAxisLabelsGap/2) + rawLabel + strings.Repeat(gapRune, plotXAxisLabelsGap/2)
+			half := strings.Repeat(gapRune, plotXAxisLabelsGap/2) //nolint:mnd
+			labelWithGap = half + rawLabel + half
 		}
 
 		expectedLabelWidth := len(labelWithGap)
@@ -444,6 +449,7 @@ func (plot *Plot) drawYAxisLabelsToScreen(screen tcell.Screen, plotYAxisLabelsWi
 func (plot *Plot) drawDotMarkerToScreen(screen tcell.Screen) {
 	x, y, width, height := plot.GetPlotRect()
 	chartData := plot.getData()
+
 	switch plot.ptype {
 	case PlotTypeLineChart:
 		for i, line := range chartData {
@@ -502,6 +508,7 @@ func (plot *Plot) drawBrailleMarkerToScreen(screen tcell.Screen) {
 				continue
 			}
 		}
+
 		style := tcell.StyleDefault.Background(plot.GetBackgroundColor()).Foreground(cell.color)
 		if point.X < x+width && point.Y <= y+height {
 			tview.PrintJoinedSemigraphics(screen, point.X, point.Y, cell.cRune, style)
